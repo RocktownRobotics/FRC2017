@@ -13,11 +13,11 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import com.ctre.CANTalon.TalonControlMode;
+import com.ctre.CANTalon;
 
 import org.usfirst.frc.team3274.robot.Robot;
 import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
-
-import com.ctre.CANTalon;
 
 /**
  * The DriveTrain subsystem controls the robot's chassis and reads in
@@ -30,13 +30,18 @@ public class DriveTrain extends Subsystem {
     SpeedController _frontRightMotor = new CANTalon(2);
     SpeedController _rearLeftMotor = new CANTalon(3);
     SpeedController _rearRightMotor = new CANTalon(4);
+    SpeedController _leftMotor = new CANTalon(5);
+    SpeedController _rightMotor = new CANTalon(6);
 
     private RobotDrive drive;
-// private Encoder rightEncoder = new Encoder(1, 2, true, EncodingType.k4X);
-// private Encoder leftEncoder = new Encoder(3, 4, false, EncodingType.k4X);
+//    private Encoder rightEncoder = new Encoder(1, 2, true, EncodingType.k4X);
+//    private Encoder leftEncoder = new Encoder(3, 4, false, EncodingType.k4X);
 
     public DriveTrain() {
-
+        ((CANTalon) _leftMotor).changeControlMode(TalonControlMode.Follower);
+        _leftMotor.set(1);
+        ((CANTalon) _rightMotor).changeControlMode(TalonControlMode.Follower);
+        _leftMotor.set(2);
         /*
          * About 'Casting' variables In the code above, we have defined the
          * wheels as SpeedControllers, a Java Interface and not a Class. For
@@ -60,23 +65,23 @@ public class DriveTrain extends Subsystem {
 
         drive.setSafetyEnabled(true);
 
-// // Configure encoders
-// rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
-// leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
+//     // Configure encoders
+//     rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
+//     leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
 //
-// if (Robot.isReal()) { // Converts to feet
-// rightEncoder.setDistancePerPulse(0.0785398);
-// leftEncoder.setDistancePerPulse(0.0785398);
-// } else { // Convert to feet 4in diameter wheels with 360 tick simulated
-// // encoders
-// rightEncoder.setDistancePerPulse(
-// (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
-// leftEncoder.setDistancePerPulse(
-// (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
-// }
-//
-// LiveWindow.addSensor("DriveTrain", "Right Encoder", rightEncoder);
-// LiveWindow.addSensor("DriveTrain", "Left Encoder", leftEncoder);
+//     if (Robot.isReal()) { // Converts to feet
+//     rightEncoder.setDistancePerPulse(0.0785398);
+//     leftEncoder.setDistancePerPulse(0.0785398);
+//     } else { // Convert to feet 4in diameter wheels with 360 tick simulated
+//     // encoders
+//     rightEncoder.setDistancePerPulse(
+//     (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
+//     leftEncoder.setDistancePerPulse(
+//     (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
+//     }
+//    
+//     LiveWindow.addSensor("DriveTrain", "Right Encoder", rightEncoder);
+//     LiveWindow.addSensor("DriveTrain", "Left Encoder", leftEncoder);
     }
 
     /**
@@ -193,7 +198,7 @@ public class DriveTrain extends Subsystem {
             lJoyStickVal = 0.0;
             inLDeadZone = true;
         } else {
-            lJoyStickVal = leftAxis;
+            lJoyStickVal = -leftAxis;
         }
 
         if ((rightAxis < DEAD_ZONE) && (rightAxis > -DEAD_ZONE)) {
@@ -207,16 +212,18 @@ public class DriveTrain extends Subsystem {
         rightPower = lJoyStickVal;
 
         if (!inLDeadZone) {
-            if (rJoyStickVal < -0.01) {
+
+            // turns with throttle
+
+            if (rJoyStickVal > 0.01) {
                 leftPower = leftPower * (1 - Math.abs(rJoyStickVal));
-            } else if (rJoyStickVal > 0.01) {
+            } else if (rJoyStickVal < -0.01) {
                 rightPower = rightPower * (1 - Math.abs(rJoyStickVal));
             }
         } else {
-
+            // does a point turn if there is no throttle
             double pow = Math.abs(rJoyStickVal);
 
-            // does the pivot
             if (rJoyStickVal > 0.01) {
                 leftPower = -pow;
                 rightPower = pow;
@@ -226,7 +233,7 @@ public class DriveTrain extends Subsystem {
             }
         }
 
-        drive.tankDrive(-leftPower, -rightPower);
+        drive.tankDrive(leftPower, rightPower);
         Timer.delay(0.005); // wait for a motor update time
     }
 

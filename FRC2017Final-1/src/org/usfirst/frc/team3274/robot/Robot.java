@@ -8,13 +8,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team3274.robot.commands.DriveForward;
-import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
+import org.usfirst.frc.team3274.robot.commands.FeedShooter;
+import org.usfirst.frc.team3274.robot.commands.PreShoot;
 import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
+import org.usfirst.frc.team3274.robot.subsystems.Collector;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team3274.robot.subsystems.Shooter;
+import org.usfirst.frc.team3274.robot.subsystems.Winch;
 
 /**
- * This is the main class for running the PacGoat code.
+ * This is the main class for running the FRC2017Final code.
  *
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -43,7 +47,7 @@ public class Robot extends IterativeRobot {
     Command teleopCommand;
     /* our joystick */
     public static OI oi;
-    /* flag for teleop mode */
+
     /*
      * 'public static' means that this variable can be accessed on the class
      * without creating an instance. IE this can be accessed by 'Robot.isTeLeop'
@@ -55,13 +59,19 @@ public class Robot extends IterativeRobot {
      */
 
     // Initialize the subsystems
-    public static DriveTrain drivetrain = new DriveTrain();
+    public static final DriveTrain drivetrain = new DriveTrain();
+    public static final Shooter shooter = new Shooter();
+    public static final Collector collector = new Collector();
+    public static final Winch winch = new Winch();
 
-    // ignore the "raw type" warning
+    // make eclipse ignore the "raw type" warning
+    @SuppressWarnings("rawtypes")
     public SendableChooser autoChooser;
 
     // This function is run when the robot is first started up and should be
     // used for any initialization code.
+    @SuppressWarnings({ "unchecked", "rawtypes" }) // make eclipse ignore the
+                                                   // "raw type" warning
     @Override
     public void robotInit() {
         SmartDashboard.putData(drivetrain);
@@ -77,6 +87,8 @@ public class Robot extends IterativeRobot {
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Autonomous Control", new RunAutonomous());
         autoChooser.addObject("Drive Forward", new DriveForward());
+        autoChooser.addObject("PreShoot", new PreShoot());
+        autoChooser.addObject("FeedShooter", new FeedShooter());
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -103,6 +115,7 @@ public class Robot extends IterativeRobot {
      * 
      * @see edu.wpi.first.wpilibj.IterativeRobot#teleopInit()
      */
+    @SuppressWarnings("unchecked") // make eclipse ignore the "raw type" warning
     @Override
     public void teleopInit() {
         // This makes sure that the autonomous stops running when
@@ -114,7 +127,7 @@ public class Robot extends IterativeRobot {
         }
 
         // instantiate commands for teleop driving
-        autoChooser.addDefault("Teleop Control", new RunTeleop());
+        autoChooser.addDefault("Teleop Commands", new RunTeleop());
     }
 
     // This function is called periodically during operator control
