@@ -1,7 +1,5 @@
 package org.usfirst.frc.team3274.robot.subsystems;
 
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.CANSpeedController;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -9,14 +7,13 @@ import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Victor;
-import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.CANTalon;
 
 import org.usfirst.frc.team3274.robot.Robot;
+import org.usfirst.frc.team3274.robot.RobotMap;
 import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
 
 /**
@@ -25,19 +22,27 @@ import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
  */
 public class DriveTrain extends Subsystem {
 
+    public static final int ENCODER_PULSES_PER_REVOLUTION = 270;
+
+    /** In inches **/
+    public static final double WHEEL_DIAMETER = 3.0;
+
     // Four wheels
-    SpeedController _frontLeftMotor = new CANTalon(1);
-    SpeedController _frontRightMotor = new CANTalon(2);
-    SpeedController _rearLeftMotor = new CANTalon(3);
-    SpeedController _rearRightMotor = new CANTalon(4);
-    SpeedController _leftMotor = new CANTalon(5);
-    SpeedController _rightMotor = new CANTalon(6);
+    SpeedController _frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR);
+    SpeedController _frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR);
+    SpeedController _rearLeftMotor = new CANTalon(RobotMap.REAR_LEFT_MOTOR);
+    SpeedController _rearRightMotor = new CANTalon(RobotMap.REAR_RIGHT_MOTOR);
+    SpeedController _leftMotor = new CANTalon(RobotMap.LEFT_MOTOR);
+    SpeedController _rightMotor = new CANTalon(RobotMap.RIGHT_MOTOR);
 
     private RobotDrive drive;
-//    private Encoder rightEncoder = new Encoder(1, 2, true, EncodingType.k4X);
-//    private Encoder leftEncoder = new Encoder(3, 4, false, EncodingType.k4X);
+    private Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER[0],
+            RobotMap.RIGHT_ENCODER[1], true, EncodingType.k4X);
+    private Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER[0],
+            RobotMap.LEFT_ENCODER[1], true, EncodingType.k4X);
 
     public DriveTrain() {
+        // make these two motors mirror other motors
         ((CANTalon) _leftMotor).changeControlMode(TalonControlMode.Follower);
         _leftMotor.set(1);
         ((CANTalon) _rightMotor).changeControlMode(TalonControlMode.Follower);
@@ -65,23 +70,28 @@ public class DriveTrain extends Subsystem {
 
         drive.setSafetyEnabled(true);
 
-//     // Configure encoders
-//     rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
-//     leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
-//
-//     if (Robot.isReal()) { // Converts to feet
-//     rightEncoder.setDistancePerPulse(0.0785398);
-//     leftEncoder.setDistancePerPulse(0.0785398);
-//     } else { // Convert to feet 4in diameter wheels with 360 tick simulated
-//     // encoders
-//     rightEncoder.setDistancePerPulse(
-//     (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
-//     leftEncoder.setDistancePerPulse(
-//     (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
-//     }
-//    
-//     LiveWindow.addSensor("DriveTrain", "Right Encoder", rightEncoder);
-//     LiveWindow.addSensor("DriveTrain", "Left Encoder", leftEncoder);
+        // Configure encoders
+        rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
+        leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
+
+        if (Robot.isReal()) { // Converts to feet
+
+            double distancePerPulse; // in feet
+            distancePerPulse = (WHEEL_DIAMETER/* in */ * Math.PI)
+                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */);
+
+            rightEncoder.setDistancePerPulse(distancePerPulse);
+            leftEncoder.setDistancePerPulse(distancePerPulse);
+        } else { // Convert to feet 4in diameter wheels with 360 tick simulated
+            // encoders
+            rightEncoder.setDistancePerPulse(
+                    (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
+            leftEncoder.setDistancePerPulse(
+                    (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
+        }
+
+        LiveWindow.addSensor("DriveTrain", "Right Encoder", rightEncoder);
+        LiveWindow.addSensor("DriveTrain", "Left Encoder", leftEncoder);
     }
 
     /**
@@ -158,7 +168,9 @@ public class DriveTrain extends Subsystem {
             rJoyStickVal = rightAxis;
         }
 
-        drive.tankDrive(-1 * lJoyStickVal, -rJoyStickVal);
+        double[] correctedPow = getSpeedCorrection(-lJoyStickVal, -rJoyStickVal);
+
+        drive.tankDrive(correctedPow[0], correctedPow[1]);
         Timer.delay(0.005); // wait for a motor update time
 
     }
@@ -233,7 +245,9 @@ public class DriveTrain extends Subsystem {
             }
         }
 
-        drive.tankDrive(leftPower, rightPower);
+        double[] correctedPow = getSpeedCorrection(-leftPower, -rightPower);
+
+        drive.tankDrive(correctedPow[0], correctedPow[1]);
         Timer.delay(0.005); // wait for a motor update time
     }
 
@@ -242,6 +256,50 @@ public class DriveTrain extends Subsystem {
      */
     public void stop() {
         drive.tankDrive(0, 0);
+    }
+
+    /**
+     * Calculates a correction for the speed the motors should be moving at
+     * based on difference in encoder readings.
+     * 
+     * Makes sure that the robot is moving in the direction it should be moving
+     * in, AKA perfectly straight if it should be going straight.
+     * 
+     * @param leftPower
+     *            - un-corrected power for left wheels (between -1 and 1)
+     * @param rightPower
+     *            - un-corrected power for right wheels (between -1 and 1)
+     * 
+     * @return correction for motor power in the form { leftPower, rightPower }
+     */
+    public double[] getSpeedCorrection(double leftPower, double rightPower) {
+
+        final double ALLOWED_MARGIN_OF_ERROR = .01; // as a percentage between 0
+                                                    // and 1
+
+        double[] corrected = { leftPower, rightPower };
+
+        double rightEncoderRate = rightEncoder.getRate(); // feet per second
+        double leftEncoderRate = leftEncoder.getRate(); // feet per second
+
+        double leftToRightMotor; // ratio between the power in the left and
+                                 // right wheels
+        double leftToRightEncoder; // ratio between the rate in the left and
+                                   // right encoders
+
+        // add code for correcting power here
+        leftToRightMotor = leftPower / rightPower;
+        leftToRightEncoder = leftEncoderRate / rightEncoderRate;
+
+        double diff = leftToRightEncoder - leftToRightMotor;
+
+        if (diff > -ALLOWED_MARGIN_OF_ERROR && diff < ALLOWED_MARGIN_OF_ERROR) {
+            // Add more code for correcting power here.
+            // Keep in mind that leftPower and rightPower could be either
+            // positive or negative
+        }
+
+        return corrected;
     }
 
 // /**
