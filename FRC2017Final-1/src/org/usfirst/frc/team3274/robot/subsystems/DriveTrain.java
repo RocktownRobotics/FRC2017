@@ -295,9 +295,6 @@ public class DriveTrain extends Subsystem {
         double diff = leftToRightEncoder - leftToRightMotor;
 
         if (diff > -ALLOWED_MARGIN_OF_ERROR && diff < ALLOWED_MARGIN_OF_ERROR) {
-            // Add more code for correcting power here.
-            // Keep in mind that leftPower and rightPower could be either
-            // positive or negative
             if (Math.abs(leftToRightMotor) > 1) {
                 corrected[1] = leftPower / leftToRightEncoder;
                 corrected[1] = Math.copySign(corrected[1], rightPower);
