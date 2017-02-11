@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3274.robot.subsystems;
 
+import org.usfirst.frc.team3274.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -7,7 +9,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Winch extends Subsystem {
     // Sets up the Talon
-    SpeedController _winch = new Talon(3);
+    SpeedController _winch = new Talon(RobotMap.WINCH_MOTOR);
     
     // Sets the speed for the 
     private double liftSpeed = 1;

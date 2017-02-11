@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3274.robot.subsystems;
 
+import org.usfirst.frc.team3274.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
@@ -10,7 +12,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Shooter extends Subsystem {
     // Set up Talons
-    SpeedController _shooterWheel = new Talon(0); // Shooter wheel
+    SpeedController _shooterWheel = new Talon(RobotMap.SHOOTER_MOTOR); // Shooter wheel
     SpeedController _feeder = new Talon(1); // Feeds the balls into the shooter
                                             // wheel
 

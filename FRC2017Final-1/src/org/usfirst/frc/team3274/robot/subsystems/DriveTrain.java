@@ -32,8 +32,8 @@ public class DriveTrain extends Subsystem {
     SpeedController _frontRightMotor = new CANTalon(RobotMap.FRONT_RIGHT_MOTOR);
     SpeedController _rearLeftMotor = new CANTalon(RobotMap.REAR_LEFT_MOTOR);
     SpeedController _rearRightMotor = new CANTalon(RobotMap.REAR_RIGHT_MOTOR);
-    SpeedController _leftMotor = new CANTalon(RobotMap.LEFT_MOTOR);
-    SpeedController _rightMotor = new CANTalon(RobotMap.RIGHT_MOTOR);
+    SpeedController _leftSlave = new CANTalon(RobotMap.LEFT_MOTOR);
+    SpeedController _rightSlave = new CANTalon(RobotMap.RIGHT_MOTOR);
 
     private RobotDrive drive;
     private Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER[0],
@@ -43,10 +43,10 @@ public class DriveTrain extends Subsystem {
 
     public DriveTrain() {
         // make these two motors mirror other motors
-        ((CANTalon) _leftMotor).changeControlMode(TalonControlMode.Follower);
-        _leftMotor.set(1);
-        ((CANTalon) _rightMotor).changeControlMode(TalonControlMode.Follower);
-        _leftMotor.set(2);
+        ((CANTalon) _rightSlave).changeControlMode(TalonControlMode.Follower);
+        _leftSlave.set(RobotMap.FRONT_LEFT_MOTOR);
+        ((CANTalon) _rightSlave).changeControlMode(TalonControlMode.Follower);
+        _leftSlave.set(RobotMap.FRONT_RIGHT_MOTOR);
         /*
          * About 'Casting' variables In the code above, we have defined the
          * wheels as SpeedControllers, a Java Interface and not a Class. For
@@ -168,7 +168,8 @@ public class DriveTrain extends Subsystem {
             rJoyStickVal = rightAxis;
         }
 
-        double[] correctedPow = getSpeedCorrection(-lJoyStickVal, -rJoyStickVal);
+        double[] correctedPow = getSpeedCorrection(-lJoyStickVal,
+                -rJoyStickVal);
 
         drive.tankDrive(correctedPow[0], correctedPow[1]);
         Timer.delay(0.005); // wait for a motor update time
@@ -297,6 +298,22 @@ public class DriveTrain extends Subsystem {
             // Add more code for correcting power here.
             // Keep in mind that leftPower and rightPower could be either
             // positive or negative
+            if (Math.abs(leftToRightMotor) > 1) {
+                corrected[1] = leftPower / leftToRightEncoder;
+                corrected[1] = Math.copySign(corrected[1], rightPower);
+            } else if (Math.abs(leftToRightMotor) < 1) {
+                corrected[0] = rightPower * leftToRightEncoder;
+                corrected[0] = Math.copySign(corrected[0], leftPower);
+            }
+        }
+
+        // Make sure neither value is above 1 or below -1
+        for (int i = 0; i < 2; i++) {
+            if (corrected[i] > 1) {
+                corrected[i] = .999;
+            } else if (corrected[i] < -1) {
+                corrected[i] = -.999;
+            }
         }
 
         return corrected;
