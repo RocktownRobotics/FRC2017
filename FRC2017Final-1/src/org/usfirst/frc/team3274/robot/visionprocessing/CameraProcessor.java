@@ -1,4 +1,4 @@
-package VisionProcessing;
+package org.usfirst.frc.team3274.robot.visionprocessing;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;

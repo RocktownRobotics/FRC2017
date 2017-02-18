@@ -20,8 +20,7 @@ import org.usfirst.frc.team3274.robot.subsystems.Feeder;
 import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
 import org.usfirst.frc.team3274.robot.subsystems.Shooter;
 import org.usfirst.frc.team3274.robot.subsystems.Winch;
-
-import VisionProcessing.CameraProcessor;
+import org.usfirst.frc.team3274.robot.visionprocessing.CameraProcessor;
 
 /**
  * This is the main class for running the FRC2017Final code.
