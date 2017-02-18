@@ -2,6 +2,7 @@ package org.usfirst.frc.team3274.robot;
 
 import com.ctre.CANTalon;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /**
@@ -10,9 +11,14 @@ import edu.wpi.first.wpilibj.SpeedController;
  * the wiring easier and significantly reduces the number of magic numbers
  * floating around.
  */
-public class RobotMap {
+public class RobotMap
+{
     // For example to map the left and right motors, you could define the
     // following variables to use with your drivetrain subsystem.
+
+    ////////////////////////////////////////////////
+    //////////// CAN TALONS BELOW HERE//////////////
+    ////////////////////////////////////////////////
 
     // Four wheels
     public static final int FRONT_LEFT_MOTOR = 1;
@@ -23,17 +29,26 @@ public class RobotMap {
     public static final int RIGHT_MOTOR = 6;
 
     // two input ports for each encoder
-    public static final int[] RIGHT_ENCODER = { 7, 8 };
-    public static final int[] LEFT_ENCODER = { 9, 10 };
-    
+    // public static final int[] RIGHT_ENCODER = { 7, 8 };
+    // public static final int[] LEFT_ENCODER = { 9, 10 };
+    public static Encoder leftEncoder = new Encoder(0, 1);
+    public static Encoder rightEncoder = new Encoder(4, 5);
+
+    ////////////////////////////////////////////////
+    /////////////// PWM's BELOW HERE////////////////
+    ////////////////////////////////////////////////
+
     // collector
-    public static final int COLLECTOR_MOTOR = 11;
-    
+    public static final int COLLECTOR_MOTOR = 0;
+
     // shooter
-    public static final int SHOOTER_MOTOR = 12;
-    
+    public static final int SHOOTER_MOTOR = 1;
+
+    // feeder
+    public static final int FEEDER_MOTOR = 2;
+
     // winch
-    public static final int WINCH_MOTOR = 13;
+    public static final int WINCH_MOTOR = 3;
 
     // If you are using multiple modules, make sure to define both the port
     // number and the module. For example you with a rangefinder:

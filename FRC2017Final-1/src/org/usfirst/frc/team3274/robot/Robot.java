@@ -7,15 +7,21 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.usfirst.frc.team3274.robot.commands.Autonomous2;
 import org.usfirst.frc.team3274.robot.commands.DriveForward;
 import org.usfirst.frc.team3274.robot.commands.FeedShooter;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
 import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
 import org.usfirst.frc.team3274.robot.subsystems.Collector;
+import org.usfirst.frc.team3274.robot.subsystems.DrivePnumatics;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team3274.robot.subsystems.Feeder;
+import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
 import org.usfirst.frc.team3274.robot.subsystems.Shooter;
 import org.usfirst.frc.team3274.robot.subsystems.Winch;
+
+import VisionProcessing.CameraProcessor;
 
 /**
  * This is the main class for running the FRC2017Final code.
@@ -42,7 +48,8 @@ import org.usfirst.frc.team3274.robot.subsystems.Winch;
  * staging file and tells the server about them. More info is available at
  * https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control
  */
-public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot
+{
     Command autonomousCommand;
     Command teleopCommand;
     /* our joystick */
@@ -61,9 +68,16 @@ public class Robot extends IterativeRobot {
     // Initialize the subsystems
     public static final DriveTrain drivetrain = new DriveTrain();
     public static final Shooter shooter = new Shooter();
+    public static final Feeder feeder = new Feeder();
     public static final Collector collector = new Collector();
     public static final Winch winch = new Winch();
+    //public static final DrivePnumatics drivepnumatics = new DrivePnumatics();
+    //public static final RobotCompressor robotCompressor = new RobotCompressor();
 
+    
+    public static final CameraProcessor cam = new CameraProcessor();
+    
+    
     // make eclipse ignore the "raw type" warning
     @SuppressWarnings("rawtypes")
     public SendableChooser autoChooser;
@@ -72,8 +86,13 @@ public class Robot extends IterativeRobot {
     // used for any initialization code.
     @SuppressWarnings({ "unchecked", "rawtypes" }) // make eclipse ignore the
                                                    // "raw type" warning
+    
     @Override
-    public void robotInit() {
+    public void robotInit()
+    {
+        
+        cam.init(); // start processing of camera input
+        
         SmartDashboard.putData(drivetrain);
 
         // This MUST be here. If the OI creates Commands (which it very likely
@@ -85,10 +104,16 @@ public class Robot extends IterativeRobot {
 
         // instantiate the command used for the autonomous period
         autoChooser = new SendableChooser();
-        autoChooser.addDefault("Autonomous Control", new RunAutonomous());
-        autoChooser.addObject("Drive Forward", new DriveForward());
-        autoChooser.addObject("PreShoot", new PreShoot());
-        autoChooser.addObject("FeedShooter", new FeedShooter());
+        autoChooser.addDefault("Default Autonomous Control",
+                new RunAutonomous());
+
+        autoChooser.addObject("Autonomous Control 2", new Autonomous2());
+
+// autoChooser.addObject("Drive Forward", new DriveForward(10));// NEED TO
+// // TEST AND
+// // CHANGE?
+// autoChooser.addObject("PreShoot", new PreShoot());
+// autoChooser.addObject("FeedShooter", new FeedShooter());
         SmartDashboard.putData("Auto Mode", autoChooser);
     }
 
@@ -98,14 +123,16 @@ public class Robot extends IterativeRobot {
      * @see edu.wpi.first.wpilibj.IterativeRobot#autonomousInit()
      */
     @Override
-    public void autonomousInit() {
+    public void autonomousInit()
+    {
         autonomousCommand = (Command) autoChooser.getSelected();
         autonomousCommand.start();
     }
 
     // This function is called periodically during autonomous
     @Override
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic()
+    {
         Scheduler.getInstance().run();
         log();
     }
@@ -117,12 +144,14 @@ public class Robot extends IterativeRobot {
      */
     @SuppressWarnings("unchecked") // make eclipse ignore the "raw type" warning
     @Override
-    public void teleopInit() {
+    public void teleopInit()
+    {
         // This makes sure that the autonomous stops running when
         // teleop starts running. If you want the autonomous to
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (autonomousCommand != null) {
+        if (autonomousCommand != null)
+        {
             autonomousCommand.cancel();
         }
 
@@ -132,7 +161,8 @@ public class Robot extends IterativeRobot {
 
     // This function is called periodically during operator control
     @Override
-    public void teleopPeriodic() {
+    public void teleopPeriodic()
+    {
 
         /*
          * Note that the DriveWithJoyStick command is activated automatically in
@@ -145,25 +175,29 @@ public class Robot extends IterativeRobot {
 
     // This function called periodically during test mode
     @Override
-    public void testPeriodic() {
+    public void testPeriodic()
+    {
         LiveWindow.run();
     }
 
     @Override
-    public void disabledInit() {
+    public void disabledInit()
+    {
 
     }
 
     // This function is called periodically while disabled
     @Override
-    public void disabledPeriodic() {
+    public void disabledPeriodic()
+    {
         log();
     }
 
     /**
      * Log interesting values to the SmartDashboard.
      */
-    private void log() {
+    private void log()
+    {
 // Robot.pneumatics.writePressure();
 // SmartDashboard.putNumber("Pivot Pot Value", Robot.pivot.getAngle());
 // SmartDashboard.putNumber("Left Distance",

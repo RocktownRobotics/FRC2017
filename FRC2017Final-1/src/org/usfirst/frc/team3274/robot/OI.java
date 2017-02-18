@@ -5,10 +5,13 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 import org.usfirst.frc.team3274.robot.commands.Collect;
+import org.usfirst.frc.team3274.robot.commands.DriveForward;
 import org.usfirst.frc.team3274.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3274.robot.commands.FeedShooter;
 import org.usfirst.frc.team3274.robot.commands.LiftRobot;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
+import org.usfirst.frc.team3274.robot.subsystems.Winch;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -17,22 +20,10 @@ import org.usfirst.frc.team3274.robot.commands.PreShoot;
 public class OI {
     /*
      * ----- button map ----- here are the button codes for the xbox controller
-     * a - 0 
-     * b - 1 
-     * x - 2 
-     * y - 3 
-     * left bumper - 4 
-     * right bumper - 5 
-     * left trigger - 6
-     * right trigger - 7 
-     * select / back - 8 
-     * start - 9 
-     * left analogue stick press - 10 
-     * right analogue stick press - 11 
-     * dpad up - 12 
-     * dpad down - 13 
-     * dpad left - 14 
-     * dpad right - 15
+     * a - 0 b - 1 x - 2 y - 3 left bumper - 4 right bumper - 5 left trigger - 6
+     * right trigger - 7 select / back - 8 start - 9 left analogue stick press -
+     * 10 right analogue stick press - 11 dpad up - 12 dpad down - 13 dpad left
+     * - 14 dpad right - 15
      */
 
     //// CREATING BUTTONS
@@ -65,22 +56,25 @@ public class OI {
 
     /* Nathan make some buttons */
     Joystick joyStick = new Joystick(0); // set to ID 1
-    JoystickButton a = new JoystickButton(joyStick, 0);
-    JoystickButton b = new JoystickButton(joyStick, 1);
-    JoystickButton x = new JoystickButton(joyStick, 2);
-    JoystickButton y = new JoystickButton(joyStick, 3);
-    JoystickButton lBumper = new JoystickButton(joyStick, 4);
-    JoystickButton rBumper = new JoystickButton(joyStick, 5);
-    JoystickButton up = new JoystickButton(joyStick, 12);
-    JoystickButton down = new JoystickButton(joyStick, 13);
-    JoystickButton left = new JoystickButton(joyStick, 14);
-    JoystickButton right = new JoystickButton(joyStick, 15);
+    JoystickButton a = new JoystickButton(joyStick, 1);
+    JoystickButton b = new JoystickButton(joyStick, 2);
+    JoystickButton x = new JoystickButton(joyStick, 3);
+    JoystickButton y = new JoystickButton(joyStick, 4);
+    JoystickButton lBumper = new JoystickButton(joyStick, 5);
+    JoystickButton rBumper = new JoystickButton(joyStick, 6);
+    JoystickButton up = new JoystickButton(joyStick, 13);
+    JoystickButton down = new JoystickButton(joyStick, 14);
+    JoystickButton left = new JoystickButton(joyStick, 15);
+    JoystickButton right = new JoystickButton(joyStick, 16);
 
     // Commands
     public OI() {
-        a.toggleWhenPressed(new PreShoot());
-        b.whileHeld(new FeedShooter());
-        down.toggleWhenPressed(new Collect());
+        
+        if (Robot.winch.isWinchRunning() == false) {
+            a.toggleWhenPressed(new PreShoot());
+            b.whileHeld(new FeedShooter());
+            x.toggleWhenPressed(new Collect());
+        }
         y.whileHeld(new LiftRobot());
     }
 

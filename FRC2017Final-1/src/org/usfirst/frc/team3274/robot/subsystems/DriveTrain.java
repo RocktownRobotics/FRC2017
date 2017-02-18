@@ -20,12 +20,13 @@ import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
  * The DriveTrain subsystem controls the robot's chassis and reads in
  * information about it's speed and position.
  */
-public class DriveTrain extends Subsystem {
+public class DriveTrain extends Subsystem
+{
 
-    public static final int ENCODER_PULSES_PER_REVOLUTION = 270;
+    public static final int ENCODER_PULSES_PER_REVOLUTION = 256;
 
     /** In inches **/
-    public static final double WHEEL_DIAMETER = 3.0;
+    public static final double WHEEL_DIAMETER = 4.0;
 
     // Four wheels
     SpeedController _frontLeftMotor = new CANTalon(RobotMap.FRONT_LEFT_MOTOR);
@@ -36,17 +37,20 @@ public class DriveTrain extends Subsystem {
     SpeedController _rightSlave = new CANTalon(RobotMap.RIGHT_MOTOR);
 
     private RobotDrive drive;
-    private Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER[0],
-            RobotMap.RIGHT_ENCODER[1], true, EncodingType.k4X);
-    private Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER[0],
-            RobotMap.LEFT_ENCODER[1], true, EncodingType.k4X);
+    private Encoder rightEncoder = RobotMap.rightEncoder; // new
+                                                          // Encoder(RobotMap.RIGHT_ENCODER[0],
+    // RobotMap.RIGHT_ENCODER[1], true, EncodingType.k4X);
+    private Encoder leftEncoder = RobotMap.leftEncoder; // new
+                                                        // Encoder(RobotMap.LEFT_ENCODER[0],
+    // RobotMap.LEFT_ENCODER[1], true, EncodingType.k4X);
 
-    public DriveTrain() {
+    public DriveTrain()
+    {
         // make these two motors mirror other motors
-        ((CANTalon) _rightSlave).changeControlMode(TalonControlMode.Follower);
+        ((CANTalon) _leftSlave).changeControlMode(TalonControlMode.Follower);
         _leftSlave.set(RobotMap.FRONT_LEFT_MOTOR);
         ((CANTalon) _rightSlave).changeControlMode(TalonControlMode.Follower);
-        _leftSlave.set(RobotMap.FRONT_RIGHT_MOTOR);
+        _rightSlave.set(RobotMap.FRONT_RIGHT_MOTOR);
         /*
          * About 'Casting' variables In the code above, we have defined the
          * wheels as SpeedControllers, a Java Interface and not a Class. For
@@ -74,7 +78,8 @@ public class DriveTrain extends Subsystem {
         rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
         leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
 
-        if (Robot.isReal()) { // Converts to feet
+        if (Robot.isReal())
+        { // Converts to feet
 
             double distancePerPulse; // in feet
             distancePerPulse = (WHEEL_DIAMETER/* in */ * Math.PI)
@@ -82,12 +87,18 @@ public class DriveTrain extends Subsystem {
 
             rightEncoder.setDistancePerPulse(distancePerPulse);
             leftEncoder.setDistancePerPulse(distancePerPulse);
-        } else { // Convert to feet 4in diameter wheels with 360 tick simulated
-            // encoders
-            rightEncoder.setDistancePerPulse(
-                    (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
-            leftEncoder.setDistancePerPulse(
-                    (4.0/* in */ * Math.PI) / (360.0 * 12.0/* in/ft */));
+        } else
+        { // Convert to feet 4in diameter wheels with 256 tick simulated
+          // encoders
+            rightEncoder.setDistancePerPulse((WHEEL_DIAMETER/* in */ * Math.PI)
+                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */)); // 4.0
+                                                                          // is
+                                                                          // diameter,
+                                                                          // which
+                                                                          // is
+                                                                          // 2r
+            leftEncoder.setDistancePerPulse((WHEEL_DIAMETER/* in */ * Math.PI)
+                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */));
         }
 
         LiveWindow.addSensor("DriveTrain", "Right Encoder", rightEncoder);
@@ -99,8 +110,33 @@ public class DriveTrain extends Subsystem {
      * the joystick.
      */
     @Override
-    public void initDefaultCommand() {
+    public void initDefaultCommand()
+    {
         setDefaultCommand(new DriveWithJoystick());
+    }
+
+    /**
+     * Resets encoders to start tracking distance driven from a certain point.
+     */
+    public void resetEncoders()
+    {
+        rightEncoder.reset();
+        leftEncoder.reset();
+    }
+
+    /**
+     * Gets the average distance driven each encoder has registered in feet
+     * since the last time the encoders were reset.
+     * 
+     * @return average distance driven in feet
+     */
+    public double getDistanceDriven()
+    {
+        double dist;
+        
+        dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
+        
+        return dist;
     }
 
     /**
@@ -110,7 +146,8 @@ public class DriveTrain extends Subsystem {
      * @param joy
      *            PS3 style joystick to use as the input for tank drive.
      */
-    public void tankDrive(Joystick joy) {
+    public void tankDrive(Joystick joy)
+    {
         this.tankDrive(joy.getRawAxis(1), joy.getRawAxis(5));
     }
 
@@ -134,9 +171,11 @@ public class DriveTrain extends Subsystem {
 
     // Checks to see if a number (variable) is in a certain range (rangeFrom)
     // from a certain point (point)
-    public boolean inRange(double variable, double point, double rangeFrom) {
+    public boolean inRange(double variable, double point, double rangeFrom)
+    {
         boolean result = false;
-        if (variable < (point + rangeFrom) && variable > (point - rangeFrom)) {
+        if (variable < (point + rangeFrom) && variable > (point - rangeFrom))
+        {
             result = true;
         }
         return result;
@@ -151,20 +190,25 @@ public class DriveTrain extends Subsystem {
      * @param rightAxis
      *            right stick y-axis
      */
-    public void tankDrive(double leftAxis, double rightAxis) {
+    public void tankDrive(double leftAxis, double rightAxis)
+    {
         double lJoyStickVal = 0.0;
         double rJoyStickVal = 0.0;
 
         // Setting up Deadzones
-        if ((leftAxis < 0.5) && (leftAxis > -0.5)) {
+        if ((leftAxis < 0.5) && (leftAxis > -0.5))
+        {
             lJoyStickVal = 0.0;
-        } else {
+        } else
+        {
             lJoyStickVal = leftAxis;
         }
 
-        if ((rightAxis < 0.5) && (rightAxis > -0.5)) {
+        if ((rightAxis < 0.5) && (rightAxis > -0.5))
+        {
             rJoyStickVal = 0.0;
-        } else {
+        } else
+        {
             rJoyStickVal = rightAxis;
         }
 
@@ -182,7 +226,8 @@ public class DriveTrain extends Subsystem {
      * @param joy
      *            joystick
      */
-    public void carDrive(Joystick joy) {
+    public void carDrive(Joystick joy)
+    {
         this.carDrive(joy.getRawAxis(1), joy.getRawAxis(4));
     }
 
@@ -194,7 +239,8 @@ public class DriveTrain extends Subsystem {
      * @param rightAxis
      *            x-axis of right stick
      */
-    public void carDrive(double leftAxis, double rightAxis) {
+    public void carDrive(double leftAxis, double rightAxis)
+    {
 
         final double DEAD_ZONE = 0.1; // +- 0, dead zone for joystick input
 
@@ -207,16 +253,20 @@ public class DriveTrain extends Subsystem {
         double rightPower;
 
         // Setting up Deadzones
-        if ((leftAxis < DEAD_ZONE) && (leftAxis > -DEAD_ZONE)) {
+        if ((leftAxis < DEAD_ZONE) && (leftAxis > -DEAD_ZONE))
+        {
             lJoyStickVal = 0.0;
             inLDeadZone = true;
-        } else {
+        } else
+        {
             lJoyStickVal = -leftAxis;
         }
 
-        if ((rightAxis < DEAD_ZONE) && (rightAxis > -DEAD_ZONE)) {
+        if ((rightAxis < DEAD_ZONE) && (rightAxis > -DEAD_ZONE))
+        {
             rJoyStickVal = 0.0;
-        } else {
+        } else
+        {
             rJoyStickVal = rightAxis;
         }
 
@@ -224,23 +274,29 @@ public class DriveTrain extends Subsystem {
         leftPower = lJoyStickVal;
         rightPower = lJoyStickVal;
 
-        if (!inLDeadZone) {
+        if (!inLDeadZone)
+        {
 
             // turns with throttle
 
-            if (rJoyStickVal > 0.01) {
+            if (rJoyStickVal > 0.01)
+            {
                 leftPower = leftPower * (1 - Math.abs(rJoyStickVal));
-            } else if (rJoyStickVal < -0.01) {
+            } else if (rJoyStickVal < -0.01)
+            {
                 rightPower = rightPower * (1 - Math.abs(rJoyStickVal));
             }
-        } else {
+        } else
+        {
             // does a point turn if there is no throttle
             double pow = Math.abs(rJoyStickVal);
 
-            if (rJoyStickVal > 0.01) {
+            if (rJoyStickVal > 0.01)
+            {
                 leftPower = -pow;
                 rightPower = pow;
-            } else if (rJoyStickVal < -0.01) {
+            } else if (rJoyStickVal < -0.01)
+            {
                 leftPower = pow;
                 rightPower = -pow;
             }
@@ -255,7 +311,8 @@ public class DriveTrain extends Subsystem {
     /**
      * Stop the drivetrain from moving.
      */
-    public void stop() {
+    public void stop()
+    {
         drive.tankDrive(0, 0);
     }
 
@@ -273,7 +330,8 @@ public class DriveTrain extends Subsystem {
      * 
      * @return correction for motor power in the form { leftPower, rightPower }
      */
-    public double[] getSpeedCorrection(double leftPower, double rightPower) {
+    public double[] getSpeedCorrection(double leftPower, double rightPower)
+    {
 
         final double ALLOWED_MARGIN_OF_ERROR = .01; // as a percentage between 0
                                                     // and 1
@@ -294,44 +352,53 @@ public class DriveTrain extends Subsystem {
 
         double diff = leftToRightEncoder - leftToRightMotor;
 
-        if (diff > -ALLOWED_MARGIN_OF_ERROR && diff < ALLOWED_MARGIN_OF_ERROR) {
-            if (Math.abs(leftToRightMotor) > 1) {
+        if (diff > -ALLOWED_MARGIN_OF_ERROR && diff < ALLOWED_MARGIN_OF_ERROR)
+        {
+            if (Math.abs(leftToRightMotor) > 1)
+            {
                 corrected[1] = leftPower / leftToRightEncoder;
                 corrected[1] = Math.copySign(corrected[1], rightPower);
-            } else if (Math.abs(leftToRightMotor) < 1) {
+            } else if (Math.abs(leftToRightMotor) < 1)
+            {
                 corrected[0] = rightPower * leftToRightEncoder;
                 corrected[0] = Math.copySign(corrected[0], leftPower);
             }
         }
 
         // Make sure neither value is above 1 or below -1
-        for (int i = 0; i < 2; i++) {
-            if (corrected[i] > 1) {
+        for (int i = 0; i < 2; i++)
+        {
+            if (corrected[i] > 1)
+            {
                 corrected[i] = .999;
-            } else if (corrected[i] < -1) {
+            } else if (corrected[i] < -1)
+            {
                 corrected[i] = -.999;
             }
         }
+        System.out.println(String.format("LeftEncoder Value = %f ",
+                leftEncoder.getRate()));
 
         return corrected;
     }
 
-// /**
-// * @return The encoder getting the distance and speed of left side of the
-// * drivetrain.
-// */
-// public Encoder getLeftEncoder() {
-// return leftEncoder;
-// }
-//
-//
-// /**
-// * @return The encoder getting the distance and speed of right side of the
-// * drivetrain.
-// */
-// public Encoder getRightEncoder() {
-// return rightEncoder;
-// }
+    /**
+     * @return The encoder getting the distance and speed of left side of the
+     *         drivetrain.
+     */
+    public Encoder getLeftEncoder()
+    {
+        return leftEncoder;
+    }
+
+    /**
+     * @return The encoder getting the distance and speed of right side of the
+     *         drivetrain.
+     */
+    public Encoder getRightEncoder()
+    {
+        return rightEncoder;
+    }
 //
 // /**
 // * @return The current angle of the drivetrain.

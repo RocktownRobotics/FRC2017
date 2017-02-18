@@ -9,15 +9,17 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  * @author Anthony 'AJ' Snarr
  *
  */
-public class RunTeleop extends CommandGroup {
+public class RunTeleop extends CommandGroup
+{
 
     /**
      * Add commands in group here.
      */
-    public RunTeleop() {
+    public RunTeleop()
+    {
         // make the robot respond to joystick input for wheel
         // movement
-        //addParallel(new DriveWithJoystick());
+        // addParallel(new DriveWithJoystick());
 
         // add other commands here
         // example: addSequential(new Command());

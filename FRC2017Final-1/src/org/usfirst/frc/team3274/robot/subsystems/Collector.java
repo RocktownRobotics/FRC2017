@@ -11,7 +11,7 @@ public class Collector extends Subsystem {
     // Set up Talons
     SpeedController _collector = new Talon(RobotMap.COLLECTOR_MOTOR);
     
-    private double collectSpeed = .25;
+    private double collectSpeed = -.999;
 
     public Collector() {
         LiveWindow.addActuator("Collector", "Collector", (Talon) _collector);

@@ -10,45 +10,65 @@ import edu.wpi.first.wpilibj.command.Command;
  * @author Dell-Laptop-FLL
  *
  */
-public class DriveForward extends Command {
+public class DriveForward extends Command
+{
 
+    /* Distance driven is stored in encoders in drive train. */
+    
     private double driveForwardSpeed;
-    private double distance;
-    private double error;
 
-    public DriveForward() {
-        this(10);
-    }
+    // in feet
+    private double goalDistance;
 
-    public DriveForward(double dist) {
+    /**
+     * Has the robot drive forward dist distance
+     * 
+     * @param dist - distance in feet
+     */
+    public DriveForward(double dist)
+    {
         this(dist, 0.5);
     }
 
-    public DriveForward(double dist, double maxSpeed) {
+    public DriveForward(double dist, double maxSpeed)
+    {
         requires(Robot.drivetrain);
-        this.distance = dist;
+        this.goalDistance = dist;
         this.driveForwardSpeed = maxSpeed;
     }
 
-    /** 
+    /**
      * Called just before this Command runs the first time.
      */
     @Override
-    protected void initialize() {
+    protected void initialize()
+    {
+        // set the distance driven for each encoder back to 0
+        Robot.drivetrain.resetEncoders();
     }
 
     /**
      * Called repeatedly when this Command is scheduled to run.
      */
     @Override
-    protected void execute() {
+    protected void execute()
+    {
+        Robot.drivetrain.tankDrive(driveForwardSpeed, driveForwardSpeed);
+        
+        // distance driven is handled by the encoders in the drive train
     }
 
     /**
      * Make this return true when this Command no longer needs to run execute().
      */
     @Override
-    protected boolean isFinished() {
+    protected boolean isFinished()
+    {
+        if (Robot.drivetrain.getDistanceDriven() >= goalDistance)
+        {
+            Robot.drivetrain.stop();
+            return true;
+        }
         return false;
     }
 
@@ -56,7 +76,8 @@ public class DriveForward extends Command {
      * Called once after isFinished returns true.
      */
     @Override
-    protected void end() {
+    protected void end()
+    {
     }
 
     /**
@@ -68,6 +89,7 @@ public class DriveForward extends Command {
      * subsystems is scheduled to run.
      */
     @Override
-    protected void interrupted() {
+    protected void interrupted()
+    {
     }
 }

@@ -4,14 +4,22 @@ import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class FeedShooter extends Command {
-    public FeedShooter() {
-        requires(Robot.shooter);
+/**
+ * This command is for testing a motor by spinning it.
+ * 
+ * @author Dell-Laptop-FLL
+ *
+ */
+public class SpinMotorTest extends Command
+{
+    public SpinMotorTest()
+    {
+        requires(Robot.collector);
     }
-
+    
     @Override
     protected void execute() {
-        Robot.feeder.startFeeder();
+        Robot.collector.collect();
     }
 
     @Override
@@ -22,7 +30,7 @@ public class FeedShooter extends Command {
 
     @Override
     protected void end() {
-        Robot.feeder.stopFeeder();
+        Robot.collector.stop();
     }
 
 }
