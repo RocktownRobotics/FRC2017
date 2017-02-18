@@ -82,4 +82,9 @@ public class OI {
     public Joystick getJoystick() {
         return this.joyStick;
     }
+    
+    public boolean lBumperPressed() {
+        
+        return lBumper.get();
+    }
 }
