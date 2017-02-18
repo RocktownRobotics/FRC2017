@@ -133,9 +133,9 @@ public class DriveTrain extends Subsystem
     public double getDistanceDriven()
     {
         double dist;
-        
+
         dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
-        
+
         return dist;
     }
 
@@ -279,10 +279,10 @@ public class DriveTrain extends Subsystem
 
             // turns with throttle
 
-            if (rJoyStickVal > 0.01)
+            if (rJoyStickVal < -0.01)
             {
                 leftPower = leftPower * (1 - Math.abs(rJoyStickVal));
-            } else if (rJoyStickVal < -0.01)
+            } else if (rJoyStickVal > 0.01)
             {
                 rightPower = rightPower * (1 - Math.abs(rJoyStickVal));
             }
@@ -291,11 +291,11 @@ public class DriveTrain extends Subsystem
             // does a point turn if there is no throttle
             double pow = Math.abs(rJoyStickVal);
 
-            if (rJoyStickVal > 0.01)
+            if (rJoyStickVal < -0.01)
             {
                 leftPower = -pow;
                 rightPower = pow;
-            } else if (rJoyStickVal < -0.01)
+            } else if (rJoyStickVal > 0.01)
             {
                 leftPower = pow;
                 rightPower = -pow;
