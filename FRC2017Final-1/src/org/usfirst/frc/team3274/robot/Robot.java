@@ -14,7 +14,7 @@ import org.usfirst.frc.team3274.robot.commands.PreShoot;
 import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
 import org.usfirst.frc.team3274.robot.subsystems.Collector;
-import org.usfirst.frc.team3274.robot.subsystems.DrivePnumatics;
+import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3274.robot.subsystems.Feeder;
 import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
@@ -70,7 +70,7 @@ public class Robot extends IterativeRobot
     public static final Feeder feeder = new Feeder();
     public static final Collector collector = new Collector();
     public static final Winch winch = new Winch();
-    //public static final DrivePnumatics drivepnumatics = new DrivePnumatics();
+    public static final DrivePneumatics drivepneumatics = new DrivePneumatics();
     //public static final RobotCompressor robotCompressor = new RobotCompressor();
 
     

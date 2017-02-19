@@ -28,11 +28,13 @@ public class RobotMap
     public static final int LEFT_MOTOR = 5;
     public static final int RIGHT_MOTOR = 6;
 
+    ////////////////////////////////////////////////
+    /////////////// DIO's BELOW HERE////////////////
+    ////////////////////////////////////////////////
+
     // two input ports for each encoder
-    // public static final int[] RIGHT_ENCODER = { 7, 8 };
-    // public static final int[] LEFT_ENCODER = { 9, 10 };
-    public static Encoder leftEncoder = new Encoder(0, 1);
-    public static Encoder rightEncoder = new Encoder(4, 5);
+    public static final int[] RIGHT_ENCODER = { 0, 1 };
+    public static final int[] LEFT_ENCODER = { 4, 5 };
 
     ////////////////////////////////////////////////
     /////////////// PWM's BELOW HERE////////////////
@@ -49,6 +51,14 @@ public class RobotMap
 
     // winch
     public static final int WINCH_MOTOR = 3;
+
+    ////////////////////////////////////////////////
+    /////////////// PCM's BELOW HERE////////////////
+    ////////////////////////////////////////////////
+
+    // shifter
+    public static int shifterForward = 3;
+    public static int shifterReverse = 2;
 
     // If you are using multiple modules, make sure to define both the port
     // number and the module. For example you with a rangefinder:

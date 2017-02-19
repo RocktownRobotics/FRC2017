@@ -15,8 +15,8 @@ public class Compress extends Command
         return false;
     }
 
-//    private boolean started;
-//
+    private boolean started;
+
 //    public Compress()
 //    {
 //        requires(Robot.robotCompressor);

@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class FeedShooter extends Command {
     public FeedShooter() {
-        requires(Robot.shooter);
+        requires(Robot.feeder);
     }
 
     @Override

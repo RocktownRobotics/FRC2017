@@ -4,12 +4,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
+import org.usfirst.frc.team3274.robot.commands.ChangeGears;
 import org.usfirst.frc.team3274.robot.commands.Collect;
 import org.usfirst.frc.team3274.robot.commands.DriveForward;
 import org.usfirst.frc.team3274.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3274.robot.commands.FeedShooter;
 import org.usfirst.frc.team3274.robot.commands.LiftRobot;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
+import org.usfirst.frc.team3274.robot.commands.ShiftUp;
 import org.usfirst.frc.team3274.robot.subsystems.Winch;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -17,7 +19,8 @@ import edu.wpi.first.wpilibj.Timer;
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI {
+public class OI
+{
     /*
      * ----- button map ----- here are the button codes for the xbox controller
      * a - 0 b - 1 x - 2 y - 3 left bumper - 4 right bumper - 5 left trigger - 6
@@ -55,6 +58,7 @@ public class OI {
     // button.whenReleased(new ExampleCommand());
 
     /* Nathan make some buttons */
+    // Joysticks and buttons
     Joystick joyStick = new Joystick(0); // set to ID 1
     JoystickButton a = new JoystickButton(joyStick, 1);
     JoystickButton b = new JoystickButton(joyStick, 2);
@@ -68,23 +72,27 @@ public class OI {
     JoystickButton right = new JoystickButton(joyStick, 16);
 
     // Commands
-    public OI() {
-        
-        if (Robot.winch.isWinchRunning() == false) {
+    public OI()
+    {
+        if (Robot.winch.isWinchRunning() == false)
+        {
             a.toggleWhenPressed(new PreShoot());
-            b.whileHeld(new FeedShooter());
+            rBumper.whileHeld(new FeedShooter());
             x.toggleWhenPressed(new Collect());
+            b.whileHeld(new ShiftUp());
         }
         y.whileHeld(new LiftRobot());
+        // lBumper.toggleWhenPressed(LiftRobot.switchDirection());
     }
 
     // In DriverStation
-    public Joystick getJoystick() {
+    public Joystick getJoystick()
+    {
         return this.joyStick;
     }
-    
-    public boolean lBumperPressed() {
-        
+
+    public boolean lBumperPressed()
+    {
         return lBumper.get();
     }
 }

@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3274.robot.visionprocessing;
 
+import java.awt.Color;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
@@ -45,7 +47,8 @@ public class CameraProcessor extends IterativeRobot
     Point point4 = new Point(startX, endY);
 
     /* green */
-    Scalar boxColor = new Scalar(255, 255, 255);
+    Scalar boxColor = new Scalar(0, 0, 0);
+    //Color newColor = new Color(0,0,0);
     int thickness = 5;
 
     public void init()
@@ -62,8 +65,8 @@ public class CameraProcessor extends IterativeRobot
         Imgproc.line(output, point3, point4, boxColor, thickness);
         Imgproc.line(output, point4, point1, boxColor, thickness);
         
-        //
-        Imgproc.rectangle(output, point1, point3, boxColor, thickness);
+        
+        //Imgproc.rectangle(output, point1, point3, boxColor, thickness);
     }
 
     private void startImageCapture()

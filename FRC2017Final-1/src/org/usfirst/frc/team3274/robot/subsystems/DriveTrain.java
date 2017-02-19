@@ -37,12 +37,10 @@ public class DriveTrain extends Subsystem
     SpeedController _rightSlave = new CANTalon(RobotMap.RIGHT_MOTOR);
 
     private RobotDrive drive;
-    private Encoder rightEncoder = RobotMap.rightEncoder; // new
-                                                          // Encoder(RobotMap.RIGHT_ENCODER[0],
-    // RobotMap.RIGHT_ENCODER[1], true, EncodingType.k4X);
-    private Encoder leftEncoder = RobotMap.leftEncoder; // new
-                                                        // Encoder(RobotMap.LEFT_ENCODER[0],
-    // RobotMap.LEFT_ENCODER[1], true, EncodingType.k4X);
+    private Encoder rightEncoder = new Encoder(RobotMap.RIGHT_ENCODER[0],
+            RobotMap.RIGHT_ENCODER[1], true, EncodingType.k4X);
+    private Encoder leftEncoder = new Encoder(RobotMap.LEFT_ENCODER[0],
+            RobotMap.LEFT_ENCODER[1], true, EncodingType.k4X);
 
     public DriveTrain()
     {

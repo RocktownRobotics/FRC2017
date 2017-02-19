@@ -1,36 +1,42 @@
 package org.usfirst.frc.team3274.robot.commands;
 
 import org.usfirst.frc.team3274.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
-public class PreShoot extends Command
+public class ShiftUp extends Command
 {
-    public PreShoot()
+    public ShiftUp()
     {
-        requires(Robot.shooter);
+        requires(Robot.drivepneumatics);
     }
 
+    /**
+     * Called just before this Command runs the first time.
+     */
     @Override
     protected void initialize()
     {
-        Robot.shooter.startShooterWheel();
+        Robot.drivepneumatics.StartHighGear();
     }
-    
+
     @Override
     protected void execute()
     {
-        
+
     }
 
     @Override
     protected boolean isFinished()
     {
+
         return false;
     }
 
     @Override
     protected void end()
     {
-        Robot.shooter.stop();
+        Robot.drivepneumatics.stop();
     }
+
 }

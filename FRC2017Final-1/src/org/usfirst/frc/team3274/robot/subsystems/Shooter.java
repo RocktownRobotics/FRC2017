@@ -10,12 +10,12 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class Shooter extends Subsystem
 {
+    public static final double SHOOTER_WHEEL_POWER = .55;
+
     // Set up Talons
     SpeedController _shooterWheel = new Talon(RobotMap.SHOOTER_MOTOR); // Shooter
                                                                        // wheel
 
-    // Sets the speed for the motors
-    private double shootSpeed = 1;
     public static double shooterStart;
 
     public Shooter()
@@ -32,12 +32,12 @@ public class Shooter extends Subsystem
     {
         // TODO Auto-generated method stub
     }
-    
+
     // Starts the shooter wheel
     public void startShooterWheel()
     {
         shooterStart = Timer.getMatchTime();
-        _shooterWheel.set(shootSpeed);
+        _shooterWheel.set(SHOOTER_WHEEL_POWER);
     }
 
     // Stops the shooter wheel

@@ -4,33 +4,28 @@ import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ChangeGears extends Command
+public class ShiftDown extends Command
 {
-    public ChangeGears()
+    public ShiftDown()
     {
         requires(Robot.drivepneumatics);
     }
 
     @Override
     protected void initialize() {
-        Robot.drivepneumatics.ShiftGears();
+        Robot.drivepneumatics.StartLowGear();
     }
     
     @Override
-    protected void execute()
-    {
-        
-    }
-
-    @Override
     protected boolean isFinished()
     {
-        return false;
+        
+        return true;
     }
-
+    
     @Override
-    protected void end()
-    {
+    protected void end() {
         Robot.drivepneumatics.stop();
     }
+
 }
