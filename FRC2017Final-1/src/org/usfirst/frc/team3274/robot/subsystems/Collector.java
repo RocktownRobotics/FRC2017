@@ -7,27 +7,38 @@ import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
-public class Collector extends Subsystem {
+public class Collector extends Subsystem
+{
     // Set up Talons
     SpeedController _collector = new Talon(RobotMap.COLLECTOR_MOTOR);
-    
+
     private double collectSpeed = -.999;
 
-    public Collector() {
+    public Collector()
+    {
         LiveWindow.addActuator("Collector", "Collector", (Talon) _collector);
     }
 
     // Starts the collecting system
-    public void collect() {
+    public void collect()
+    {
         _collector.set(collectSpeed);
+    }
+    
+    // Starts the collecting system
+    public void collectReverse() 
+    {
+        _collector.set(-collectSpeed);
     }
 
     @Override
-    protected void initDefaultCommand() {
+    protected void initDefaultCommand()
+    {
         // TODO Auto-generated method stub
     }
 
-    public void stop() {
+    public void stop()
+    {
         _collector.set(0);
     }
 }

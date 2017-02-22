@@ -4,33 +4,29 @@ import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ChangeGears extends Command
+public class CollectReverse extends Command
 {
-    public ChangeGears()
+    public CollectReverse()
     {
-        requires(Robot.drivepneumatics);
+        requires(Robot.collector);
     }
 
     @Override
-    protected void initialize() {
-        Robot.drivepneumatics.ShiftGears();
-    }
-    
-    @Override
     protected void execute()
     {
-        
+        Robot.collector.collectReverse();
     }
 
     @Override
     protected boolean isFinished()
     {
+        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     protected void end()
     {
-        Robot.drivepneumatics.stop();
+        Robot.collector.stop();
     }
 }

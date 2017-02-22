@@ -17,10 +17,10 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public class CameraProcessor extends IterativeRobot
 {
-    /* camera input */
+   /*  camera input 
     private Mat source = new Mat();
-    /* camera output */
-    private Mat output = new Mat();
+     camera output 
+    private Mat output = new Mat();*/
 
     private CvSource outputStream;
     private CvSink cvSink;
@@ -56,19 +56,19 @@ public class CameraProcessor extends IterativeRobot
         startImageCapture();
     }
 
-    public void drawRectangle()
+  /*  public void drawRectangle()
     {
         //System.out.println("draw rect");
-        /* draw rectangle on output image */
+         draw rectangle on output image 
         Imgproc.line(output, point1, point2, boxColor, thickness);
         Imgproc.line(output, point2, point3, boxColor, thickness);
-        Imgproc.line(output, point3, point4, boxColor, thickness);
+        Imgproc.line(output, point3, point4, botxColor, thickness);
         Imgproc.line(output, point4, point1, boxColor, thickness);
         
         
         //Imgproc.rectangle(output, point1, point3, boxColor, thickness);
     }
-
+*/
     private void startImageCapture()
     {
         new Thread(() -> {
@@ -78,6 +78,11 @@ public class CameraProcessor extends IterativeRobot
             /* set resolution to standard definition */
             camera.setResolution(frameWidth, frameHeight);
 
+            /* camera input */
+            Mat source = new Mat();
+            /* camera output */
+            Mat output = new Mat();
+            
             /* vision processing stuff */
             cvSink = CameraServer.getInstance().getVideo();
             /* putting the camera output into memory to analyze */
@@ -94,7 +99,13 @@ public class CameraProcessor extends IterativeRobot
                 // Imgcodecs.imwrite("test2.jpg", output);
 
                 Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2RGB);
-                drawRectangle();
+
+                /* draw rectangle on output image */
+                Imgproc.line(output, point1, point2, boxColor, thickness);
+                Imgproc.line(output, point2, point3, boxColor, thickness);
+                Imgproc.line(output, point3, point4, boxColor, thickness);
+                Imgproc.line(output, point4, point1, boxColor, thickness);
+                
                 /* send to smart dashboard */
                 outputStream.putFrame(output);
             }

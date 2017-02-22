@@ -7,6 +7,42 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class Compress extends Command
 {
+    boolean started;
+    
+    public Compress()
+    {
+        requires(Robot.robotCompressor);
+    }
+
+    @Override
+    protected void initialize()
+    {
+        started = false;
+    }
+
+    private void startCompressor()
+    {
+        Robot.robotCompressor.start();
+        started = true;
+    }
+
+    private void stopCompressor()
+    {
+        Robot.robotCompressor.stop();
+        started = false;
+    }
+
+    @Override
+    protected void execute()
+    {
+        if (Robot.winch.isWinchRunning() == false && started == false)
+        {
+            startCompressor();
+        } else if (Robot.winch.isWinchRunning() == true && started == true)
+        {
+            stopCompressor();
+        }
+    }
 
     @Override
     protected boolean isFinished()
@@ -15,53 +51,9 @@ public class Compress extends Command
         return false;
     }
 
-    private boolean started;
-
-//    public Compress()
-//    {
-//        requires(Robot.robotCompressor);
-//    }
-//
-//    @Override
-//    protected void initialize()
-//    {
-//        started = false;
-//    }
-//
-//    private void startCompressor()
-//    {
-//        Robot.robotCompressor.start();
-//        started = true;
-//    }
-//
-//    private void stopCompressor()
-//    {
-//        Robot.robotCompressor.stop();
-//        started = false;
-//    }
-//
-//    @Override
-//    protected void execute()
-//    {
-//        if (Robot.winch.isWinchRunning() == false && started == false)
-//        {
-//            startCompressor();
-//        } else if (Robot.winch.isWinchRunning() == true && started == true)
-//        {
-//            stopCompressor();
-//        }
-//    }
-//
-//    @Override
-//    protected boolean isFinished()
-//    {
-//        // TODO Auto-generated method stub
-//        return false;
-//    }
-//
-//    @Override
-//    protected void end()
-//    {
-//        Robot.robotCompressor.stop();
-//    }
+    @Override
+    protected void end()
+    {
+        Robot.robotCompressor.stop();
+    }
 }

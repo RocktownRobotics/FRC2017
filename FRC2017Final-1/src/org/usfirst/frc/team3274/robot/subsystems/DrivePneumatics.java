@@ -9,41 +9,43 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 
 public class DrivePneumatics extends Subsystem
 {
+    Solenoid reverseShifter = new Solenoid(RobotMap.shifterReverse);
     Solenoid forwardShifter = new Solenoid(RobotMap.shifterForward);
-    
-    //DoubleSolenoid gearShifter = new DoubleSolenoid(RobotMap.shifterForward,
-    //        RobotMap.shifterReverse);
 
-    DoubleSolenoid.Value off = DoubleSolenoid.Value.kOff;
-    // May need to switch lowGear and HighGear values (kForward/kReverse)
-    DoubleSolenoid.Value lowGear = DoubleSolenoid.Value.kForward;
-    DoubleSolenoid.Value highGear = DoubleSolenoid.Value.kReverse;
+// DoubleSolenoid gearShifter = new DoubleSolenoid(RobotMap.shifterForward,
+// RobotMap.shifterReverse);
+//
+// DoubleSolenoid.Value off = DoubleSolenoid.Value.kOff;
+// // May need to switch lowGear and HighGear values (kForward/kReverse)
+// DoubleSolenoid.Value lowGear = DoubleSolenoid.Value.kForward;
+// DoubleSolenoid.Value highGear = DoubleSolenoid.Value.kReverse;
 
     public DrivePneumatics()
     {
-        //LiveWindow.addActuator("DrivePnumatics", "GearShifter", gearShifter);
+        // LiveWindow.addActuator("DrivePnumatics", "GearShifter", gearShifter);
     }
 
     public void StartLowGear()
     {
-        //gearShifter.set(lowGear);
+        reverseShifter.set(true);
+        // gearShifter.set(lowGear);
     }
 
     public void StartHighGear()
     {
         forwardShifter.set(true);
-        //gearShifter.set(highGear);
+        // gearShifter.set(highGear);
     }
 
     public void ShiftGears()
     {
-//        if (gearShifter.get() == lowGear)
-//        {
-//            StartHighGear();
-//        } else if (gearShifter.get() == highGear)
-//        {
-//            StartLowGear();
-//        }
+// if (gearShifter.get() == lowGear)
+// {
+// StartHighGear();
+// } else if (gearShifter.get() == highGear)
+// {
+// StartLowGear();
+// }
     }
 
     @Override
@@ -55,6 +57,8 @@ public class DrivePneumatics extends Subsystem
     public void stop()
     {
         forwardShifter.set(false);
-        //gearShifter.set(off);
+        reverseShifter.set(false);
+
+        // gearShifter.set(off);
     }
 }

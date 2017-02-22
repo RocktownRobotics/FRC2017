@@ -15,11 +15,13 @@ import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
 import org.usfirst.frc.team3274.robot.subsystems.Collector;
 import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
+//import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3274.robot.subsystems.Feeder;
 import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
 import org.usfirst.frc.team3274.robot.subsystems.Shooter;
 import org.usfirst.frc.team3274.robot.subsystems.Winch;
+//import org.usfirst.frc.team3274.robot.visionprocessing.CameraProcessor;
 import org.usfirst.frc.team3274.robot.visionprocessing.CameraProcessor;
 
 /**
@@ -71,12 +73,10 @@ public class Robot extends IterativeRobot
     public static final Collector collector = new Collector();
     public static final Winch winch = new Winch();
     public static final DrivePneumatics drivepneumatics = new DrivePneumatics();
-    //public static final RobotCompressor robotCompressor = new RobotCompressor();
+    public static final RobotCompressor robotCompressor = new RobotCompressor();
 
-    
     public static final CameraProcessor cam = new CameraProcessor();
-    
-    
+
     // make eclipse ignore the "raw type" warning
     @SuppressWarnings("rawtypes")
     public SendableChooser autoChooser;
@@ -85,13 +85,13 @@ public class Robot extends IterativeRobot
     // used for any initialization code.
     @SuppressWarnings({ "unchecked", "rawtypes" }) // make eclipse ignore the
                                                    // "raw type" warning
-    
+
     @Override
     public void robotInit()
     {
-        
+
         cam.init(); // start processing of camera input
-        
+
         SmartDashboard.putData(drivetrain);
 
         // This MUST be here. If the OI creates Commands (which it very likely

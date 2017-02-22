@@ -4,24 +4,29 @@ import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class FeedShooter extends Command {
-    public FeedShooter() {
+public class FeedShooter extends Command
+{
+    public FeedShooter()
+    {
         requires(Robot.feeder);
     }
 
     @Override
-    protected void execute() {
+    protected void execute()
+    {
         Robot.feeder.startFeeder();
     }
 
     @Override
-    protected boolean isFinished() {
+    protected boolean isFinished()
+    {
         // TODO Auto-generated method stub
         return false;
     }
 
     @Override
-    protected void end() {
+    protected void end()
+    {
         Robot.feeder.stopFeeder();
     }
 

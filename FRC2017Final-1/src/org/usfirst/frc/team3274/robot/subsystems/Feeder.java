@@ -2,6 +2,7 @@ package org.usfirst.frc.team3274.robot.subsystems;
 
 import org.usfirst.frc.team3274.robot.RobotMap;
 
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.Timer;
@@ -15,19 +16,24 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  */
 public class Feeder extends Subsystem
 {
-    SpeedController _feeder = new Talon(RobotMap.FEEDER_MOTOR); // Feeds the
-                                                                // balls into
+    SpeedController _indexingWheel = new Talon(RobotMap.FEEDER_MOTOR); // Feeds the
+                                                            // balls into
                                                                 // the shooter
                                                                 // wheel
+    Relay agitator = new Relay(RobotMap.SPIKE);
+    
+    
     // Time variables to determine if the feeder can start
+    private final double FEED_SPEED = -0.9999;
+    
     private boolean feederReady;
     private double shooterCheckTime;
     private double timeToFeed = 1;
-    private double feedSpeed = .1;
 
     public Feeder()
     {
-        LiveWindow.addActuator("Shooter", "Feeder", (Talon) _feeder);
+        LiveWindow.addActuator("Shooter", "Feeder", (Talon) _indexingWheel);
+        LiveWindow.addActuator("Agitator", "Agitator", agitator);
     }
 
     public boolean isFeederReady()
@@ -44,13 +50,17 @@ public class Feeder extends Subsystem
     // Starts the feeder
     public void startFeeder()
     {
-        _feeder.set(feedSpeed);
+        _indexingWheel.set(FEED_SPEED);
+        agitator.set(Relay.Value.kOn);
+        agitator.set(Relay.Value.kReverse);
     }
     
     // Stops the feeder
     public void stopFeeder()
     {
-        _feeder.set(0);
+        _indexingWheel.set(0);
+        agitator.set(Relay.Value.kOff);
+        
     }
 
     @Override

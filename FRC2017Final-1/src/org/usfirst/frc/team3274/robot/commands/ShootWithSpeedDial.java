@@ -1,19 +1,20 @@
 package org.usfirst.frc.team3274.robot.commands;
 
 import org.usfirst.frc.team3274.robot.Robot;
+
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Collect extends Command
+public class ShootWithSpeedDial extends Command
 {
-    public Collect()
+    public ShootWithSpeedDial()
     {
-        requires(Robot.collector);
+        requires(Robot.shooter);
     }
 
     @Override
     protected void execute()
     {
-        Robot.collector.collect();
+        Robot.shooter.speedShoot(Robot.oi.getJoystick2());
     }
 
     @Override
@@ -21,11 +22,5 @@ public class Collect extends Command
     {
         // TODO Auto-generated method stub
         return false;
-    }
-
-    @Override
-    protected void end()
-    {
-        Robot.collector.stop();
     }
 }

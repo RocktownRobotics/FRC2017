@@ -56,9 +56,15 @@ public class RobotMap
     /////////////// PCM's BELOW HERE////////////////
     ////////////////////////////////////////////////
 
-    // shifter
-    public static int shifterForward = 3;
-    public static int shifterReverse = 2;
+    public static int shifterForward = 4;
+    public static int shifterReverse = 3;
+    
+    ////////////////////////////////////////////////
+    ////////////// Relays BELOW HERE////////////////
+    ////////////////////////////////////////////////
+    
+    // agitator
+    public static final int SPIKE = 0;
 
     // If you are using multiple modules, make sure to define both the port
     // number and the module. For example you with a rangefinder:
