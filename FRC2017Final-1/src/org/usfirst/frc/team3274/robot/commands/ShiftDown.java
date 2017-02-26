@@ -16,17 +16,17 @@ public class ShiftDown extends Command
     {
         Robot.drivepneumatics.StartLowGear();
     }
-//    
+
     @Override
     protected boolean isFinished()
     {
-        
-        return true;
-    }    
-    @Override
-    protected void end() {
-        Robot.drivepneumatics.stop();
+        return false;
     }
 
+    @Override
+    protected void end()
+    {
+        Robot.drivepneumatics.stop();
+    }
 
 }

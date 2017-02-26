@@ -12,17 +12,11 @@ public class LiftRobot extends Command
     }
 
     @Override
-    protected void execute()
+    protected void initialize()
     {
-//        if (Robot.oi.lBumperPressed() == false)
-//        {
-//            Robot.winch.start();
-//        } else if (Robot.oi.lBumperPressed() == true)
-//        {
-//            Robot.winch.reverse();
-//        }
+        Robot.winch.start();
     }
-
+    
     @Override
     protected boolean isFinished()
     {

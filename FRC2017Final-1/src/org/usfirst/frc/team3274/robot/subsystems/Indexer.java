@@ -14,13 +14,13 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
  * 
  * @author Dell-Laptop-FLL
  */
-public class Feeder extends Subsystem
+public class Indexer extends Subsystem
 {
-    SpeedController _indexingWheel = new Talon(RobotMap.FEEDER_MOTOR); // Feeds the
+    SpeedController _indexingWheel = new Talon(RobotMap.INDEXING_MOTOR); // Feeds the
                                                             // balls into
                                                                 // the shooter
                                                                 // wheel
-    Relay agitator = new Relay(RobotMap.SPIKE);
+    //Relay agitator = new Relay(RobotMap.SPIKE);
     
     
     // Time variables to determine if the feeder can start
@@ -30,10 +30,10 @@ public class Feeder extends Subsystem
     private double shooterCheckTime;
     private double timeToFeed = 1;
 
-    public Feeder()
+    public Indexer()
     {
         LiveWindow.addActuator("Shooter", "Feeder", (Talon) _indexingWheel);
-        LiveWindow.addActuator("Agitator", "Agitator", agitator);
+        //LiveWindow.addActuator("Agitator", "Agitator", agitator);
     }
 
     public boolean isFeederReady()
@@ -51,15 +51,15 @@ public class Feeder extends Subsystem
     public void startFeeder()
     {
         _indexingWheel.set(FEED_SPEED);
-        agitator.set(Relay.Value.kOn);
-        agitator.set(Relay.Value.kReverse);
+//        agitator.set(Relay.Value.kOn);
+//        agitator.set(Relay.Value.kForward);
     }
     
     // Stops the feeder
     public void stopFeeder()
     {
         _indexingWheel.set(0);
-        agitator.set(Relay.Value.kOff);
+//        agitator.set(Relay.Value.kOff);
         
     }
 

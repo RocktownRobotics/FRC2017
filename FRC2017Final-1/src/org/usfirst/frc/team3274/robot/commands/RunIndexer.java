@@ -4,17 +4,17 @@ import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class FeedShooter extends Command
+public class RunIndexer extends Command
 {
-    public FeedShooter()
+    public RunIndexer()
     {
-        requires(Robot.feeder);
+        requires(Robot.indexer);
     }
 
     @Override
     protected void execute()
     {
-        Robot.feeder.startFeeder();
+        Robot.indexer.startFeeder();
     }
 
     @Override
@@ -27,7 +27,6 @@ public class FeedShooter extends Command
     @Override
     protected void end()
     {
-        Robot.feeder.stopFeeder();
+        Robot.indexer.stopFeeder();
     }
-
 }

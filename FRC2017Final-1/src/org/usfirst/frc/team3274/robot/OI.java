@@ -1,21 +1,18 @@
 package org.usfirst.frc.team3274.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import org.usfirst.frc.team3274.robot.commands.ShiftGears;
+import org.usfirst.frc.team3274.robot.commands.Agitate;
 import org.usfirst.frc.team3274.robot.commands.Collect;
 import org.usfirst.frc.team3274.robot.commands.CollectReverse;
-import org.usfirst.frc.team3274.robot.commands.DriveForward;
-import org.usfirst.frc.team3274.robot.commands.ExampleCommand;
-import org.usfirst.frc.team3274.robot.commands.FeedShooter;
 import org.usfirst.frc.team3274.robot.commands.LiftRobot;
+import org.usfirst.frc.team3274.robot.commands.LowerRobot;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
+import org.usfirst.frc.team3274.robot.commands.RunIndexer;
 import org.usfirst.frc.team3274.robot.commands.ShiftDown;
 import org.usfirst.frc.team3274.robot.commands.ShiftUp;
-import org.usfirst.frc.team3274.robot.subsystems.Winch;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -59,7 +56,7 @@ public class OI
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
 
-    // The first Joystick
+    /** The first joystick. Has to be an xbox controller. **/
     Joystick joyStick = new Joystick(0); // set to ID 1
     JoystickButton a = new JoystickButton(joyStick, 1);
     JoystickButton b = new JoystickButton(joyStick, 2);
@@ -74,7 +71,7 @@ public class OI
     JoystickButton start = new JoystickButton(joyStick, 7);
     JoystickButton back = new JoystickButton(joyStick, 8);
 
-    // The second Joystick stuff
+    /** Has to be a flight stick controller. **/
     Joystick joyStick2 = new Joystick(1); // set to ID 2...?
     JoystickButton trigger = new JoystickButton(joyStick2, 1);
     JoystickButton button2 = new JoystickButton(joyStick2, 2);
@@ -82,6 +79,8 @@ public class OI
     JoystickButton button4 = new JoystickButton(joyStick2, 4);
     JoystickButton button5 = new JoystickButton(joyStick2, 5);
     JoystickButton button6 = new JoystickButton(joyStick2, 6);
+    JoystickButton button8 =  new JoystickButton(joyStick2, 8);
+    JoystickButton button9 =  new JoystickButton(joyStick2, 9);
 
     // Commands
     public OI()
@@ -97,16 +96,21 @@ public class OI
     {
         if (Robot.winch.isWinchRunning() == false)
         {
-            button6.whileHeld(new FeedShooter());
-            button3.toggleWhenPressed(new FeedShooter());
+            button6.whileHeld(new RunIndexer());
+            button3.toggleWhenPressed(new RunIndexer());
+            button2.toggleWhenPressed(new Agitate());
             x.toggleWhenPressed(new Collect());
             b.toggleWhenPressed(new CollectReverse());
+            trigger.toggleWhenPressed(new PreShoot());
         }
-        y.whileHeld(new LiftRobot());
-        
+
         // shifting gears
         lBumper.whileHeld(new ShiftDown());
         rBumper.whileHeld(new ShiftUp());
+        
+        // running winch
+        button9.whileHeld(new LiftRobot());
+        button8.whileHeld(new LowerRobot());
     }
 
     /**
@@ -117,20 +121,42 @@ public class OI
         if (Robot.winch.isWinchRunning() == false)
         {
             a.toggleWhenPressed(new PreShoot());
-            rBumper.whileHeld(new FeedShooter());
+            rBumper.whileHeld(new RunIndexer());
             x.toggleWhenPressed(new Collect());
             b.whileHeld(new ShiftUp());
         }
         y.whileHeld(new LiftRobot());
-        // lBumper.toggleWhenPressed(LiftRobot.switchDirection());
     }
 
-    // In DriverStation
+    /**
+     * Causes the joystick to rumble.
+     */
+    public void rumbleJoyStick(boolean rumble)
+    {
+        if (rumble)
+        {
+            this.joyStick.setRumble(GenericHID.RumbleType.kLeftRumble, 1);
+        } else
+        {
+            this.joyStick.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+        }
+    }
+
+    /**
+     * Joystick 1 has to be an xbox controller.
+     * 
+     * @return
+     */
     public Joystick getJoystick()
     {
         return this.joyStick;
     }
 
+    /**
+     * Joystick 2 has to be a flightstick.
+     * 
+     * @return
+     */
     public Joystick getJoystick2()
     {
         return this.joyStick2;

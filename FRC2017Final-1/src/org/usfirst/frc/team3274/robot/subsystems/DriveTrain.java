@@ -24,6 +24,7 @@ public class DriveTrain extends Subsystem
 {
 
     public static final int ENCODER_PULSES_PER_REVOLUTION = 256;
+    private double sniperMode = 1; // adds precision when less than to 1. Normal power is divided by this value to enter sniper mode
 
     /** In inches **/
     public static final double WHEEL_DIAMETER = 4.0;
@@ -89,12 +90,7 @@ public class DriveTrain extends Subsystem
         { // Convert to feet 4in diameter wheels with 256 tick simulated
           // encoders
             rightEncoder.setDistancePerPulse((WHEEL_DIAMETER/* in */ * Math.PI)
-                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */)); // 4.0
-                                                                          // is
-                                                                          // diameter,
-                                                                          // which
-                                                                          // is
-                                                                          // 2r
+                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */));
             leftEncoder.setDistancePerPulse((WHEEL_DIAMETER/* in */ * Math.PI)
                     / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */));
         }
@@ -112,6 +108,8 @@ public class DriveTrain extends Subsystem
     {
         setDefaultCommand(new DriveWithJoystick());
     }
+    
+    //public 
 
     /**
      * Resets encoders to start tracking distance driven from a certain point.
@@ -132,9 +130,20 @@ public class DriveTrain extends Subsystem
     {
         double dist;
 
-        dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
+        //dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
+        dist = rightEncoder.getDistance();
 
         return dist;
+    }
+    
+    public double getLeftDistance()
+    {
+        return leftEncoder.getDistance();
+    }
+    
+    public double getRightDistance()
+    {
+        return rightEncoder.getDistance();
     }
 
     /**
@@ -300,7 +309,8 @@ public class DriveTrain extends Subsystem
             }
         }
 
-        double[] correctedPow = getSpeedCorrection(-leftPower, -rightPower);
+        double[] correctedPow = { -leftPower, -rightPower };
+        //correctedPow = getSpeedCorrection(-leftPower, -rightPower);
 
         drive.tankDrive(correctedPow[0], correctedPow[1]);
         Timer.delay(0.005); // wait for a motor update time

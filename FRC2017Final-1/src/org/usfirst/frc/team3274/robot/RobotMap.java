@@ -35,6 +35,8 @@ public class RobotMap
     // two input ports for each encoder
     public static final int[] RIGHT_ENCODER = { 0, 1 };
     public static final int[] LEFT_ENCODER = { 4, 5 };
+    // Touchless Encoder (the second channel is irrelevant)
+    public static final int[] TL_ENCODER = { 8, 9 };
 
     ////////////////////////////////////////////////
     /////////////// PWM's BELOW HERE////////////////
@@ -47,7 +49,7 @@ public class RobotMap
     public static final int SHOOTER_MOTOR = 1;
 
     // feeder
-    public static final int FEEDER_MOTOR = 2;
+    public static final int INDEXING_MOTOR = 2;
 
     // winch
     public static final int WINCH_MOTOR = 3;
@@ -56,8 +58,8 @@ public class RobotMap
     /////////////// PCM's BELOW HERE////////////////
     ////////////////////////////////////////////////
 
-    public static int shifterForward = 4;
-    public static int shifterReverse = 3;
+    public static int shifterForward = 3;
+    public static int shifterReverse = 4;
     
     ////////////////////////////////////////////////
     ////////////// Relays BELOW HERE////////////////

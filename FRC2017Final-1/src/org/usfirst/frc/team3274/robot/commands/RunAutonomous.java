@@ -17,6 +17,6 @@ public class RunAutonomous extends CommandGroup
     public RunAutonomous()
     {
         // example: addSequential(new Command());
-        addSequential(new DriveForward(10));
+        addSequential(new DriveForward(3));
     }
 }

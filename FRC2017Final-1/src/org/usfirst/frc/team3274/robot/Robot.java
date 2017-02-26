@@ -7,17 +7,18 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc.team3274.robot.commands.Autonomous2;
+import org.usfirst.frc.team3274.robot.commands.AutoAvoidLeft;
+import org.usfirst.frc.team3274.robot.commands.AutoAvoidRight;
 import org.usfirst.frc.team3274.robot.commands.DriveForward;
-import org.usfirst.frc.team3274.robot.commands.FeedShooter;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
 import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
+import org.usfirst.frc.team3274.robot.subsystems.Agitator;
 import org.usfirst.frc.team3274.robot.subsystems.Collector;
 import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 //import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team3274.robot.subsystems.Feeder;
+import org.usfirst.frc.team3274.robot.subsystems.Indexer;
 import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
 import org.usfirst.frc.team3274.robot.subsystems.Shooter;
 import org.usfirst.frc.team3274.robot.subsystems.Winch;
@@ -69,11 +70,12 @@ public class Robot extends IterativeRobot
     // Initialize the subsystems
     public static final DriveTrain drivetrain = new DriveTrain();
     public static final Shooter shooter = new Shooter();
-    public static final Feeder feeder = new Feeder();
+    public static final Indexer indexer = new Indexer();
     public static final Collector collector = new Collector();
     public static final Winch winch = new Winch();
     public static final DrivePneumatics drivepneumatics = new DrivePneumatics();
     public static final RobotCompressor robotCompressor = new RobotCompressor();
+    public static final Agitator agitator = new Agitator();
 
     public static final CameraProcessor cam = new CameraProcessor();
 
@@ -106,7 +108,8 @@ public class Robot extends IterativeRobot
         autoChooser.addDefault("Default Autonomous Control",
                 new RunAutonomous());
 
-        autoChooser.addObject("Autonomous Control 2", new Autonomous2());
+        autoChooser.addObject("Autonomous Avoid Left", new AutoAvoidLeft());
+        autoChooser.addObject("Autonomous Avoid Right", new AutoAvoidRight());
 
 // autoChooser.addObject("Drive Forward", new DriveForward(10));// NEED TO
 // // TEST AND
@@ -155,7 +158,7 @@ public class Robot extends IterativeRobot
         }
 
         // instantiate commands for teleop driving
-        autoChooser.addDefault("Teleop Commands", new RunTeleop());
+        //autoChooser.addDefault("Teleop Commands", new RunTeleop());
     }
 
     // This function is called periodically during operator control
@@ -197,11 +200,16 @@ public class Robot extends IterativeRobot
      */
     private void log()
     {
-// Robot.pneumatics.writePressure();
-// SmartDashboard.putNumber("Pivot Pot Value", Robot.pivot.getAngle());
-// SmartDashboard.putNumber("Left Distance",
-// drivetrain.getLeftEncoder().getDistance());
-// SmartDashboard.putNumber("Right Distance",
-// drivetrain.getRightEncoder().getDistance());
+        //SmartDashboard.putNumber("Shooter Speed", shooter.getRPM());
+
+        SmartDashboard.putNumber("Right Encoder Distance",
+                drivetrain.getRightDistance());
+        
+        SmartDashboard.putNumber("Left Encoder Distance",
+                drivetrain.getLeftDistance());
+        
+        SmartDashboard.putBoolean("High Gear", drivepneumatics.getCurrentGear());
+        
+        SmartDashboard.putBoolean("Agitator", agitator.getIsRunning());
     }
 }

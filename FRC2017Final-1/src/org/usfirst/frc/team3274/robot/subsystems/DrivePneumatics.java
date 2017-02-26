@@ -61,4 +61,13 @@ public class DrivePneumatics extends Subsystem
 
         // gearShifter.set(off);
     }
+    
+    /**
+     * 
+     * @return -1 for low and 1 for high
+     */
+    public boolean getCurrentGear()
+    {
+        return forwardShifter.get() == true;
+    }
 }
