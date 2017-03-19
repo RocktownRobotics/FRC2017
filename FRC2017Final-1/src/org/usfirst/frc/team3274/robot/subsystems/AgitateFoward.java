@@ -1,37 +1,32 @@
-package org.usfirst.frc.team3274.robot.commands;
+package org.usfirst.frc.team3274.robot.subsystems;
 
 import org.usfirst.frc.team3274.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ShiftGears extends Command
-{
-    public ShiftGears()
+public class AgitateFoward extends Command
+{  
+    public AgitateFoward()
     {
-        requires(Robot.drivepneumatics);
+        requires(Robot.agitator);
     }
-
+    
     @Override
     protected void initialize()
     {
-        Robot.drivepneumatics.ShiftGears();
+        Robot.agitator.forward();
     }
-
-    @Override
-    protected void execute()
-    {
-
-    }
-
+    
     @Override
     protected boolean isFinished()
     {
+        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     protected void end()
     {
-        Robot.drivepneumatics.stop();
+        Robot.agitator.stop();
     }
 }

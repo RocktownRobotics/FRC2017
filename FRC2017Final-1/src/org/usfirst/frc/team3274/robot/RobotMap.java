@@ -17,6 +17,19 @@ public class RobotMap
     // following variables to use with your drivetrain subsystem.
 
     ////////////////////////////////////////////////
+    ///////////// JOYSTICK AXIS ////////////////////
+    ////////////////////////////////////////////////
+    
+    // xbox controller
+    public static final int XBOX_LEFT_Y_AXIS = 1;
+    public static final int XBOX_RIGHT_X_AXIS = 4;
+    
+    // flight stick
+    public static final int FLIGHT_STICK_FORWARD_AXIS = 1;
+    public static final int FLIGHT_STICK_THROTTLE_AXIS = 2;
+    
+    
+    ////////////////////////////////////////////////
     //////////// CAN TALONS BELOW HERE//////////////
     ////////////////////////////////////////////////
 
@@ -33,8 +46,8 @@ public class RobotMap
     ////////////////////////////////////////////////
 
     // two input ports for each encoder
-    public static final int[] RIGHT_ENCODER = { 0, 1 };
-    public static final int[] LEFT_ENCODER = { 4, 5 };
+    public static final int[] RIGHT_ENCODER = { 4, 5 };
+    public static final int[] LEFT_ENCODER = { 0, 1 };
     // Touchless Encoder (the second channel is irrelevant)
     public static final int[] TL_ENCODER = { 8, 9 };
 
@@ -57,9 +70,12 @@ public class RobotMap
     ////////////////////////////////////////////////
     /////////////// PCM's BELOW HERE////////////////
     ////////////////////////////////////////////////
-
+    public static int gateDrop = 0;
+    public static int gateRaise = 1;
     public static int shifterForward = 3;
     public static int shifterReverse = 4;
+    public static int gearForward = 6;
+    public static int gearReverse = 7;
     
     ////////////////////////////////////////////////
     ////////////// Relays BELOW HERE////////////////

@@ -2,7 +2,9 @@ package org.usfirst.frc.team3274.robot.commands;
 
 import org.usfirst.frc.team3274.robot.Robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Used to make the robot drive forward a certain distance in autonomous.
@@ -14,7 +16,7 @@ public class DriveForward extends Command
 {
 
     /* Distance driven is stored in encoders in drive train. */
-    
+
     private double driveForwardSpeed;
 
     // in feet
@@ -27,9 +29,14 @@ public class DriveForward extends Command
      */
     public DriveForward(double dist)
     {
-        this(dist, 0.5);
+        this(dist, .50);
     }
 
+    /**
+     * 
+     * @param dist - in feet.
+     * @param maxSpeed
+     */
     public DriveForward(double dist, double maxSpeed)
     {
         requires(Robot.drivetrain);
@@ -54,7 +61,6 @@ public class DriveForward extends Command
     protected void execute()
     {
         Robot.drivetrain.tankDrive(driveForwardSpeed, driveForwardSpeed);
-        
         // distance driven is handled by the encoders in the drive train
     }
 
@@ -66,9 +72,10 @@ public class DriveForward extends Command
     {
         if (Robot.drivetrain.getDistanceDriven() >= goalDistance)
         {
-            Robot.drivetrain.stop();
+            SmartDashboard.putNumber("Distancestuffs", 42);
             return true;
         }
+        SmartDashboard.putNumber("Distancestuffs", 1);
         return false;
     }
 
@@ -78,6 +85,7 @@ public class DriveForward extends Command
     @Override
     protected void end()
     {
+        Robot.drivetrain.stop();
     }
 
     /**

@@ -2,11 +2,17 @@ package org.usfirst.frc.team3274.robot.commands;
 
 import org.usfirst.frc.team3274.robot.Robot;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ShiftGears extends Command
+public class ShiftDownForTime extends Command
 {
-    public ShiftGears()
+    /** In seconds **/
+    public static final double WAIT_TIME = .8;
+
+    private double timeToReach;
+
+    public ShiftDownForTime()
     {
         requires(Robot.drivepneumatics);
     }
@@ -14,18 +20,18 @@ public class ShiftGears extends Command
     @Override
     protected void initialize()
     {
-        Robot.drivepneumatics.ShiftGears();
-    }
+        this.timeToReach = Timer.getMatchTime() + WAIT_TIME;
 
-    @Override
-    protected void execute()
-    {
-
+        Robot.drivepneumatics.StartLowGear();
     }
 
     @Override
     protected boolean isFinished()
     {
+        if (Timer.getMatchTime() >= this.timeToReach)
+        {
+            return true;
+        }
         return false;
     }
 
@@ -34,4 +40,5 @@ public class ShiftGears extends Command
     {
         Robot.drivepneumatics.stop();
     }
+
 }

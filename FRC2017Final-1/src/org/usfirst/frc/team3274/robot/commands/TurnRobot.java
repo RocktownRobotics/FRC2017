@@ -20,7 +20,7 @@ public class TurnRobot extends Command
 
     double degrees;
 
-    // circumference derived from turn radius
+    // circumference derived from turn radius (
     double goalTurnDistance;
 
     /**
@@ -75,7 +75,7 @@ public class TurnRobot extends Command
         return this.goalTurnDistance >= 0
                 && Robot.drivetrain.getRightDistance() >= this.goalTurnDistance
                 || this.goalTurnDistance < 0 && Robot.drivetrain
-                        .getRightDistance() <= this.goalTurnDistance;
+                        .getLeftDistance() >= this.goalTurnDistance;
     }
 
     /**
@@ -87,8 +87,13 @@ public class TurnRobot extends Command
         Robot.drivetrain.carDrive(0, 0);
     }
 
+    /**
+     * In feet.
+     * 
+     * @return
+     */
     private double getCircumference()
     {
-        return 2 * TURN_RADIUS * Math.PI;
+        return 2 * TURN_RADIUS * (1 / 12) /* in/ft */ * Math.PI;
     }
 }

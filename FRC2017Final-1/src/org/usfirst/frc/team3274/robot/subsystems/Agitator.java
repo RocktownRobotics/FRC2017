@@ -3,6 +3,7 @@ package org.usfirst.frc.team3274.robot.subsystems;
 import org.usfirst.frc.team3274.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -15,7 +16,7 @@ public class Agitator extends Subsystem
     {
         LiveWindow.addActuator("Agitator", "Agitator", agitator);
     }
-    
+
     public Relay.Value getDirection()
     {
         return agitator.get();
@@ -45,7 +46,7 @@ public class Agitator extends Subsystem
     {
         agitator.set(Relay.Value.kOff);
     }
-    
+
     public boolean getIsRunning()
     {
         return agitator.get() != Relay.Value.kOff;

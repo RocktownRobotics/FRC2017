@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.CANTalon;
 
+import org.usfirst.frc.team3274.robot.OI;
 import org.usfirst.frc.team3274.robot.Robot;
 import org.usfirst.frc.team3274.robot.RobotMap;
 import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
@@ -22,9 +23,12 @@ import org.usfirst.frc.team3274.robot.commands.DriveWithJoystick;
  */
 public class DriveTrain extends Subsystem
 {
-
+    public static final double DEFAULT_SNIPER_MODE_MULTIPLIER = .5;
+    
     public static final int ENCODER_PULSES_PER_REVOLUTION = 256;
-    private double sniperMode = 1; // adds precision when less than to 1. Normal power is divided by this value to enter sniper mode
+    private double sniperMode = 1; // adds precision when less than to 1. Normal
+                                   // power is divided by this value to enter
+                                   // sniper mode
 
     /** In inches **/
     public static final double WHEEL_DIAMETER = 4.0;
@@ -81,8 +85,12 @@ public class DriveTrain extends Subsystem
         { // Converts to feet
 
             double distancePerPulse; // in feet
-            distancePerPulse = (WHEEL_DIAMETER/* in */ * Math.PI)
-                    / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */);
+// distancePerPulse = (WHEEL_DIAMETER/* in */ * Math.PI)
+// / (ENCODER_PULSES_PER_REVOLUTION * 12.0/* in/ft */);
+// distancePerPulse = 4922.041667 / (ENCODER_PULSES_PER_REVOLUTION
+// * ENCODER_PULSES_PER_REVOLUTION); // in feet
+
+            distancePerPulse = 0.00078594; // in feet
 
             rightEncoder.setDistancePerPulse(distancePerPulse);
             leftEncoder.setDistancePerPulse(distancePerPulse);
@@ -108,8 +116,16 @@ public class DriveTrain extends Subsystem
     {
         setDefaultCommand(new DriveWithJoystick());
     }
-    
-    //public 
+
+    public int getLeftRotations()
+    {
+        return this.leftEncoder.getRaw();
+    }
+
+    public int getRightRotations()
+    {
+        return this.rightEncoder.getRaw();
+    }
 
     /**
      * Resets encoders to start tracking distance driven from a certain point.
@@ -118,6 +134,16 @@ public class DriveTrain extends Subsystem
     {
         rightEncoder.reset();
         leftEncoder.reset();
+    }
+
+    /**
+     * 
+     * @param dividor - 1 is not sniper mode, anything between 0 and 1 is the
+     *            percentage the motors are reduced by
+     */
+    public void setSniperMode(double dividor)
+    {
+        this.sniperMode = dividor;
     }
 
     /**
@@ -130,32 +156,30 @@ public class DriveTrain extends Subsystem
     {
         double dist;
 
-        //dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
-        dist = rightEncoder.getDistance();
+        dist = (rightEncoder.getDistance() + leftEncoder.getDistance()) / 2;
+// dist = rightEncoder.getDistance();
 
         return dist;
     }
-    
+
+    /**
+     * Distance in feet.
+     * 
+     * @return
+     */
     public double getLeftDistance()
     {
         return leftEncoder.getDistance();
     }
-    
+
+    /**
+     * Distance in feet.
+     * 
+     * @return
+     */
     public double getRightDistance()
     {
         return rightEncoder.getDistance();
-    }
-
-    /**
-     * Drive the wheels on one side forward with one stick and the wheels on
-     * another side forward with another stick.
-     * 
-     * @param joy
-     *            PS3 style joystick to use as the input for tank drive.
-     */
-    public void tankDrive(Joystick joy)
-    {
-        this.tankDrive(joy.getRawAxis(1), joy.getRawAxis(5));
     }
 
     /**
@@ -189,6 +213,37 @@ public class DriveTrain extends Subsystem
     }
 
     /**
+     * For joystick axis. Checks if the given axis is OI.DEAD_ZONE distance from
+     * 0.
+     * 
+     * @param axis - joystick axis
+     * @return true if axis value is in dead zone
+     */
+    public boolean isInDeadZone(double axis)
+    {
+        if ((axis < OI.DEAD_ZONE) && (axis > -OI.DEAD_ZONE))
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Drive the wheels on one side forward with one stick and the wheels on
+     * another side forward with another stick.
+     * 
+     * @param joy
+     *            PS3 style joystick to use as the input for tank drive.
+     */
+    public void tankDrive(Joystick joy)
+    {
+        this.tankDrive(joy.getRawAxis(-RobotMap.XBOX_LEFT_Y_AXIS),
+                joy.getRawAxis(-RobotMap.XBOX_RIGHT_X_AXIS));
+    }
+
+    /**
      * Drive the wheels on one side forward with one stick and the wheels on
      * another side forward with another stick.
      * 
@@ -203,7 +258,7 @@ public class DriveTrain extends Subsystem
         double rJoyStickVal = 0.0;
 
         // Setting up Deadzones
-        if ((leftAxis < 0.5) && (leftAxis > -0.5))
+        if (this.isInDeadZone(leftAxis))
         {
             lJoyStickVal = 0.0;
         } else
@@ -211,13 +266,17 @@ public class DriveTrain extends Subsystem
             lJoyStickVal = leftAxis;
         }
 
-        if ((rightAxis < 0.5) && (rightAxis > -0.5))
+        if (this.isInDeadZone(rightAxis))
         {
             rJoyStickVal = 0.0;
         } else
         {
             rJoyStickVal = rightAxis;
         }
+
+        // used for sniper mode
+        lJoyStickVal *= sniperMode;
+        rJoyStickVal *= sniperMode;
 
         double[] correctedPow = getSpeedCorrection(-lJoyStickVal,
                 -rJoyStickVal);
@@ -235,7 +294,8 @@ public class DriveTrain extends Subsystem
      */
     public void carDrive(Joystick joy)
     {
-        this.carDrive(joy.getRawAxis(1), joy.getRawAxis(4));
+        this.carDrive(joy.getRawAxis(RobotMap.XBOX_LEFT_Y_AXIS),
+                joy.getRawAxis(RobotMap.XBOX_RIGHT_X_AXIS));
     }
 
     /**
@@ -248,9 +308,6 @@ public class DriveTrain extends Subsystem
      */
     public void carDrive(double leftAxis, double rightAxis)
     {
-
-        final double DEAD_ZONE = 0.1; // +- 0, dead zone for joystick input
-
         boolean inLDeadZone = false;
 
         double lJoyStickVal = 0.0;
@@ -260,7 +317,7 @@ public class DriveTrain extends Subsystem
         double rightPower;
 
         // Setting up Deadzones
-        if ((leftAxis < DEAD_ZONE) && (leftAxis > -DEAD_ZONE))
+        if (this.isInDeadZone(leftAxis))
         {
             lJoyStickVal = 0.0;
             inLDeadZone = true;
@@ -269,13 +326,17 @@ public class DriveTrain extends Subsystem
             lJoyStickVal = -leftAxis;
         }
 
-        if ((rightAxis < DEAD_ZONE) && (rightAxis > -DEAD_ZONE))
+        if (this.isInDeadZone(rightAxis))
         {
             rJoyStickVal = 0.0;
         } else
         {
             rJoyStickVal = rightAxis;
         }
+
+        // used for sniper mode
+        lJoyStickVal *= sniperMode;
+        rJoyStickVal *= sniperMode;
 
         // convert to left and right power with floating point errors in mind
         leftPower = lJoyStickVal;
@@ -309,8 +370,8 @@ public class DriveTrain extends Subsystem
             }
         }
 
-        double[] correctedPow = { -leftPower, -rightPower };
-        //correctedPow = getSpeedCorrection(-leftPower, -rightPower);
+// double[] correctedPow = { -leftPower, -rightPower };
+        double[] correctedPow = getSpeedCorrection(-leftPower, -rightPower);
 
         drive.tankDrive(correctedPow[0], correctedPow[1]);
         Timer.delay(0.005); // wait for a motor update time
@@ -341,8 +402,9 @@ public class DriveTrain extends Subsystem
     public double[] getSpeedCorrection(double leftPower, double rightPower)
     {
 
-        final double ALLOWED_MARGIN_OF_ERROR = .01; // as a percentage between 0
-                                                    // and 1
+        final double ALLOWED_MARGIN_OF_ERROR = .005; // as a percentage between
+                                                     // 0
+                                                     // and 1 (0.005 is good)
 
         double[] corrected = { leftPower, rightPower };
 
@@ -386,7 +448,6 @@ public class DriveTrain extends Subsystem
         }
         System.out.println(String.format("LeftEncoder Value = %f ",
                 leftEncoder.getRate()));
-
         return corrected;
     }
 
@@ -406,6 +467,11 @@ public class DriveTrain extends Subsystem
     public Encoder getRightEncoder()
     {
         return rightEncoder;
+    }
+    
+    public double getSniperValue()
+    {
+        return this.sniperMode;
     }
 //
 // /**

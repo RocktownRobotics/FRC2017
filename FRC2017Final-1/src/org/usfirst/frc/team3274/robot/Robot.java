@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3274.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -9,15 +10,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.usfirst.frc.team3274.robot.commands.AutoAvoidLeft;
 import org.usfirst.frc.team3274.robot.commands.AutoAvoidRight;
+import org.usfirst.frc.team3274.robot.commands.AutoDriveForward;
+import org.usfirst.frc.team3274.robot.commands.AutoGear;
+import org.usfirst.frc.team3274.robot.commands.AutoNothing;
+import org.usfirst.frc.team3274.robot.commands.AutoShoot;
 import org.usfirst.frc.team3274.robot.commands.DriveForward;
+import org.usfirst.frc.team3274.robot.commands.KickGearBackward;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
-import org.usfirst.frc.team3274.robot.commands.RunAutonomous;
 import org.usfirst.frc.team3274.robot.commands.RunTeleop;
 import org.usfirst.frc.team3274.robot.subsystems.Agitator;
 import org.usfirst.frc.team3274.robot.subsystems.Collector;
 import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 //import org.usfirst.frc.team3274.robot.subsystems.DrivePneumatics;
 import org.usfirst.frc.team3274.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team3274.robot.subsystems.GearGate;
+import org.usfirst.frc.team3274.robot.subsystems.GearKicker;
 import org.usfirst.frc.team3274.robot.subsystems.Indexer;
 import org.usfirst.frc.team3274.robot.subsystems.RobotCompressor;
 import org.usfirst.frc.team3274.robot.subsystems.Shooter;
@@ -76,8 +83,10 @@ public class Robot extends IterativeRobot
     public static final DrivePneumatics drivepneumatics = new DrivePneumatics();
     public static final RobotCompressor robotCompressor = new RobotCompressor();
     public static final Agitator agitator = new Agitator();
+    public static final GearGate gearGate = new GearGate();
+    public static final GearKicker gearKicker = new GearKicker();
 
-    public static final CameraProcessor cam = new CameraProcessor();
+    // public static final CameraProcessor cam = new CameraProcessor();
 
     // make eclipse ignore the "raw type" warning
     @SuppressWarnings("rawtypes")
@@ -92,7 +101,7 @@ public class Robot extends IterativeRobot
     public void robotInit()
     {
 
-        cam.init(); // start processing of camera input
+        // cam.init(); // start processing of camera input
 
         SmartDashboard.putData(drivetrain);
 
@@ -105,15 +114,18 @@ public class Robot extends IterativeRobot
 
         // instantiate the command used for the autonomous period
         autoChooser = new SendableChooser();
-        autoChooser.addDefault("Default Autonomous Control",
-                new RunAutonomous());
+        autoChooser.addDefault("Do Nothing", new AutoNothing());
 
+        autoChooser.addObject("Place Center Gear",
+                new AutoGear(AutoGear.GearLocation.CENTER));
+        autoChooser.addObject("Place Left Gear",
+                new AutoGear(AutoGear.GearLocation.LEFT));
+        autoChooser.addObject("Place Right Gear",
+                new AutoGear(AutoGear.GearLocation.RIGHT));
+        autoChooser.addObject("Drive Forward", new AutoDriveForward());
         autoChooser.addObject("Autonomous Avoid Left", new AutoAvoidLeft());
         autoChooser.addObject("Autonomous Avoid Right", new AutoAvoidRight());
-
-// autoChooser.addObject("Drive Forward", new DriveForward(10));// NEED TO
-// // TEST AND
-// // CHANGE?
+        autoChooser.addObject("Autonomous shoot high goal", new AutoShoot());
 // autoChooser.addObject("PreShoot", new PreShoot());
 // autoChooser.addObject("FeedShooter", new FeedShooter());
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -158,7 +170,7 @@ public class Robot extends IterativeRobot
         }
 
         // instantiate commands for teleop driving
-        //autoChooser.addDefault("Teleop Commands", new RunTeleop());
+        // autoChooser.addDefault("Teleop Commands", new RunTeleop());
     }
 
     // This function is called periodically during operator control
@@ -200,16 +212,30 @@ public class Robot extends IterativeRobot
      */
     private void log()
     {
-        //SmartDashboard.putNumber("Shooter Speed", shooter.getRPM());
+        // SmartDashboard.putNumber("Shooter Speed", shooter.getRPM());
 
         SmartDashboard.putNumber("Right Encoder Distance",
                 drivetrain.getRightDistance());
-        
+
         SmartDashboard.putNumber("Left Encoder Distance",
                 drivetrain.getLeftDistance());
-        
-        SmartDashboard.putBoolean("High Gear", drivepneumatics.getCurrentGear());
-        
+
+        SmartDashboard.putNumber("Avrg Encoder Distance",
+                drivetrain.getDistanceDriven());
+
+        SmartDashboard.putBoolean("High Gear",
+                drivepneumatics.getCurrentGear());
+
+        SmartDashboard.putNumber("Sniper Value", drivetrain.getSniperValue());
+
         SmartDashboard.putBoolean("Agitator", agitator.getIsRunning());
+
+        SmartDashboard.putNumber("Right Encoder Rotations",
+                drivetrain.getRightRotations());
+
+        SmartDashboard.putNumber("Left Encoder Rotations",
+                drivetrain.getLeftRotations());
+
+        SmartDashboard.putNumber("Game Time", Timer.getMatchTime());
     }
 }

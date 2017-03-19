@@ -5,14 +5,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 import org.usfirst.frc.team3274.robot.commands.Agitate;
+import org.usfirst.frc.team3274.robot.commands.AgitateReverse;
 import org.usfirst.frc.team3274.robot.commands.Collect;
 import org.usfirst.frc.team3274.robot.commands.CollectReverse;
 import org.usfirst.frc.team3274.robot.commands.LiftRobot;
 import org.usfirst.frc.team3274.robot.commands.LowerRobot;
 import org.usfirst.frc.team3274.robot.commands.PreShoot;
 import org.usfirst.frc.team3274.robot.commands.RunIndexer;
+import org.usfirst.frc.team3274.robot.commands.RunSniperMode;
 import org.usfirst.frc.team3274.robot.commands.ShiftDown;
 import org.usfirst.frc.team3274.robot.commands.ShiftUp;
+import org.usfirst.frc.team3274.robot.subsystems.AgitateFoward;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -56,6 +59,9 @@ public class OI
     // until it is finished as determined by it's isFinished method.
     // button.whenReleased(new ExampleCommand());
 
+    /** +- 0, dead zone for joystick input **/
+    public static final double DEAD_ZONE = 0.1;
+
     /** The first joystick. Has to be an xbox controller. **/
     Joystick joyStick = new Joystick(0); // set to ID 1
     JoystickButton a = new JoystickButton(joyStick, 1);
@@ -71,6 +77,21 @@ public class OI
     JoystickButton start = new JoystickButton(joyStick, 7);
     JoystickButton back = new JoystickButton(joyStick, 8);
 
+// /** The second joystick. Has to be an xbox controller. **/
+// Joystick joyStick2 = new Joystick(1); // set to ID 1
+// JoystickButton a2 = new JoystickButton(joyStick, 1);
+// JoystickButton b2 = new JoystickButton(joyStick, 2);
+// JoystickButton x2 = new JoystickButton(joyStick, 3);
+// JoystickButton y2 = new JoystickButton(joyStick, 4);
+// JoystickButton lBumper2 = new JoystickButton(joyStick, 5);
+// JoystickButton rBumper2 = new JoystickButton(joyStick, 6);
+// JoystickButton up2 = new JoystickButton(joyStick, 13);
+// JoystickButton down2 = new JoystickButton(joyStick, 14);
+// JoystickButton left2 = new JoystickButton(joyStick, 15);
+// JoystickButton right2 = new JoystickButton(joyStick, 16);
+// JoystickButton start2 = new JoystickButton(joyStick, 7);
+// JoystickButton back2 = new JoystickButton(joyStick, 8);
+
     /** Has to be a flight stick controller. **/
     Joystick joyStick2 = new Joystick(1); // set to ID 2...?
     JoystickButton trigger = new JoystickButton(joyStick2, 1);
@@ -79,8 +100,13 @@ public class OI
     JoystickButton button4 = new JoystickButton(joyStick2, 4);
     JoystickButton button5 = new JoystickButton(joyStick2, 5);
     JoystickButton button6 = new JoystickButton(joyStick2, 6);
-    JoystickButton button8 =  new JoystickButton(joyStick2, 8);
-    JoystickButton button9 =  new JoystickButton(joyStick2, 9);
+    JoystickButton button8 = new JoystickButton(joyStick2, 8);
+    JoystickButton button9 = new JoystickButton(joyStick2, 9);
+// JoystickButton button11 = new JoystickButton(joyStick2, 11);
+// JoystickButton button12= new JoystickButton(joyStick2, 12);
+
+    /** Has to be a flight sick controller. **/
+    Joystick joyStick3 = new Joystick(2);
 
     // Commands
     public OI()
@@ -95,23 +121,48 @@ public class OI
     private void initDoubleJoystickSetup()
     {
         if (Robot.winch.isWinchRunning() == false)
+
         {
-            button6.whileHeld(new RunIndexer());
-            button3.toggleWhenPressed(new RunIndexer());
+            button3.whileHeld(new RunIndexer()); // change to button 4
+            button6.toggleWhenPressed(new RunIndexer());
             button2.toggleWhenPressed(new Agitate());
+// button11.toggleWhenPressed(new AgitateReverse());
+// button12.toggleWhenPressed(new AgitateFoward());
             x.toggleWhenPressed(new Collect());
             b.toggleWhenPressed(new CollectReverse());
             trigger.toggleWhenPressed(new PreShoot());
+            a.toggleWhenPressed(new RunSniperMode());
         }
 
         // shifting gears
         lBumper.whileHeld(new ShiftDown());
         rBumper.whileHeld(new ShiftUp());
-        
+
         // running winch
         button9.whileHeld(new LiftRobot());
         button8.whileHeld(new LowerRobot());
     }
+
+// private void initDoubleXboxSetup()S// {
+// if (Robot.winch.isWinchRunning() == false)
+// {
+// a.whileHeld(new RunIndexer());
+// y.toggleWhenPressed(new RunIndexer());
+// button2.toggleWhenPressed(new Agitate());
+// x.toggleWhenPressed(new Collect());
+// b.toggleWhenPressed(new CollectReverse());
+// trigger.toggleWhenPressed(new PreShoot());
+// a.toggleWhenPressed(new RunSniperMode());
+// }
+//
+// // shifting gears
+// lBumper.whileHeld(new ShiftDown());
+// rBumper.whileHeld(new ShiftUp());
+//
+// // running winch
+// button9.whileHeld(new LiftRobot());
+// button8.whileHeld(new LowerRobot());
+// }
 
     /**
      * OI setup for a single xbox controller.
@@ -160,5 +211,15 @@ public class OI
     public Joystick getJoystick2()
     {
         return this.joyStick2;
+    }
+
+    /**
+     * Joystick 3 has to be a flightstick.
+     * 
+     * @return
+     */
+    public Joystick getJoystick3()
+    {
+        return this.joyStick3;
     }
 }

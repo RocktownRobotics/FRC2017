@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends Subsystem
 {
-    public static final double SHOOTER_WHEEL_POWER = .515;
+    public static final double SHOOTER_WHEEL_POWER = .47;
     public static final double MAX_SHOOT_RPM = 2650;
 
     // Set up Encoder
@@ -100,6 +100,7 @@ public class Shooter extends Subsystem
 //        adjustShooterWithEncoder(discretePower, wantRPM);
         
         this._shooterWheel.set(discretePower);
+        SmartDashboard.putNumber("Shooter Wheel speed :", discretePower);
     }
 
     /**
@@ -115,7 +116,7 @@ public class Shooter extends Subsystem
 //        double changePower = discretePower * ratioRPM;
 //        changePower = trim(changePower, 0, 1);
 //        this._shooterWheel.set(changePower);
-//        SmartDashboard.putNumber("Shooter Wheel RPM :", nowRPM);
+        //SmartDashboard.putNumber("Shooter Wheel speed :", discretePower);
 //    }
 
     private double trim(double n, double min, double max)
